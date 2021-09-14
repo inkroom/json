@@ -11,25 +11,37 @@
 package cn.inkroom.json.reader;
 
 import cn.inkroom.json.Token;
+import cn.inkroom.json.annotation.JsonConfig;
+import cn.inkroom.json.annotation.JsonFeature;
 import cn.inkroom.json.exception.JsonException;
 
 
 /**
- * 只支持单行json数据的reader
+ * 直接读取字符串的reader
  */
-public class SingleLineTokenReader implements TokenReader {
+public class StringTokenReader implements TokenReader {
 
 
+    private JsonConfig config;
     private char[] data;//数据窗口，每次读取这么多数据，把数据窗口的数据使用完之后再读取
-    private int cursor = -1;//数据指针，指向即将读取的数据位置
+    private int cursor = -1;//数据指针，指向即将读取的数据位置，包括换行符之类的空白字符
+    private int row = 0;//读取到第几行
+    private int col = -1;//读取到第几列
 
-    public SingleLineTokenReader(String data) {
+
+    public StringTokenReader(String data, JsonConfig config) {
+        this.config = config;
         this.data = data.toCharArray();
     }
 
 
     private boolean isWhiteSpace(char ch) {
         return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
+    }
+
+    @Override
+    public void setConfig(JsonConfig config) {
+        this.config = config;
     }
 
     @Override
@@ -149,11 +161,71 @@ public class SingleLineTokenReader implements TokenReader {
         StringBuilder builder = new StringBuilder();
         for (; ; ) {
             char c = next();
-            if (c == '"') {
-                return builder.toString();
-            }
+            if (c == '\\') {
+                char n = next();
+                switch (n) {
+                    case '"':
+                        builder.append(n);
+                        break;
+                    case 't':
+                        builder.append("\t");
+                        break;
+                    case 'n':
+                        builder.append("\n");
+                        break;
+                    case 'r':
+                        builder.append("\r");
+                        break;
+                    case '\\':
+                        builder.append("\\");
+                        break;
+                    case '/':
+                        builder.append("/");
+                        break;
+                    case 'b':
+                        builder.append("\b");
+                        break;
+                    case 'f':
+                        builder.append("\f");
+                        break;
+                    case 'u':
+                        // unicode码
 
-            builder.append(c);
+                        if (config.isEnable(JsonFeature.CONVERT_UNICODE)) {
+                            //将十六进制转成十进制
+                            int r = 0;
+                            for (int i = 0; i < 4; i++) {
+                                char code = next();
+                                if (code >= '0' && code <= '9') {
+                                    r = (r << 4) + (code - '0');
+                                } else if (code >= 'a' && code <= 'f') {
+                                    r = (r << 4) + (code - 'a') + 10;
+                                } else if (code >= 'A' && code <= 'F') {
+                                    r = (r << 4) + (code - 'a') + 10;
+                                } else
+                                    throwError(null);
+                            }
+                            builder.append((char) r);
+                        } else {
+                            builder.append("\\u");
+                            for (int i = 0; i < 4; i++) {
+                                char next = next();
+                                if ((next >= '0' && next <= '9') || (next >= 'a' && next <= 'f') || (next >= 'A' && next <= 'F'))
+                                    builder.append(next);
+                                else throwError(null);
+                            }
+                        }
+
+
+                        break;
+                    default:
+                        throwError(null);
+                }
+            } else if (c == '"') {
+                return builder.toString();
+            } else {
+                builder.append(c);
+            }
         }
     }
 
@@ -173,10 +245,7 @@ public class SingleLineTokenReader implements TokenReader {
 
     @Override
     public void throwError(Token token) throws RuntimeException {
-        if (token != null) {
-            throw new JsonException("unexcept character " + token + " col number: " + cursor);
-        }
-        throw new JsonException("error json, col number: " + cursor);
+        throw new JsonException("Unexpected character " + now() + " row: " + row + ", col: " + col);
 
     }
 
@@ -201,7 +270,15 @@ public class SingleLineTokenReader implements TokenReader {
      */
     private char next() {
         if (!hasMore()) throwError(null);
-        return data[cursor++];
+        char datum = data[cursor++];
+        col++;
+        switch (datum) {
+            case '\r':
+            case '\n':
+                row++;
+                col = 0;
+        }
+        return datum;
     }
 
     /**

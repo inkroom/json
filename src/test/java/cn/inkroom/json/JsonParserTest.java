@@ -45,7 +45,31 @@ public class JsonParserTest {
 
         parse("{\"1\":\"ink json lib\"}");
         parse("{\"1\":\"\"}");
-        parse("{\"1\":1,}","{\"1\":1}");
+        parse("{\"1\":1,}", "{\"1\":1}");
+
+        //测试带有换行符的json
+        parse("{\n}", "{}");
+        parse("{\n\"1\":1}", "{\"1\":1}");
+        parse("{\"1\"\n:1.0}", "{\"1\":1.0}");
+        parse("{\"1\":0.1\n}", "{\"1\":0.1}");
+        parse("{\"1\"\n:\n-1\n}", "{\"1\":-1}");
+        parse("{\"1\":-1.3\r}", "{\"1\":-1.3}");
+        parse("{\"1\":\rtrue\t}", "{\"1\":true}");
+        parse("{\"1\"\t:false\r}", "{\"1\":false}");
+        parse("{\"1\"\t:null\n}", "{\"1\":null}");
+        parse("{\t\"1\"\n:\r1,\"2\":1.0}", "{\"1\":1,\"2\":1.0}");
+        parse("{\"1\":1,\"2\":2.0,\"3\":true}", "{\"1\":1,\"2\":2.0,\"3\":true}");
+        parse("{\"1\":1,\r\"2\":2.0,\"3\":true\n,\"4\":false}", "{\"1\":1,\"2\":2.0,\"3\":true,\"4\":false}");
+        parse("{\"1\":1,\"2\":2.0\r,\"3\":true,\"4\":false,\"5\":null}", "{\"1\":1,\"2\":2.0,\"3\":true,\"4\":false,\"5\":null}");
+        parse("{\"1\":1,\"2\":2.0\n,\"3\":true,\"4\":false,\"5\":null,\"6\":-6,\"7\":-7.67}", "{\"1\":1,\"2\":2.0,\"3\":true,\"4\":false,\"5\":null,\"6\":-6,\"7\":-7.67}");
+        parse("{\"1\":1,\"2\":2.0,\"3\":true,\"4\":false,\"5\":null,\"6\":-6,\"7\":-7.67,\"8\":\"ink json lib\"\n,\"9\":\"json lib\"}", "{\"1\":1,\"2\":2.0,\"3\":true,\"4\":false,\"5\":null,\"6\":-6,\"7\":-7.67,\"8\":\"ink json lib\",\"9\":\"json lib\"}");
+        parse("{\"1\":1,\"2\":2.0,\"3\":true,\"4\":false,\"5\":null,\"6\":-6,\"7\":-7.67,\"8\":\"ink json lib\"\n,\"9\":\"json lib\"}", "{\"1\":1,\"2\":2.0,\"3\":true,\"4\":false,\"5\":null,\"6\":-6,\"7\":-7.67,\"8\":\"ink json lib\",\"9\":\"json lib\"}");
+
+
+        parse("{\"1\":\"ink json lib\"}");
+        parse("{\"1\":\"\"}");
+        parse("{\"1\":1,}", "{\"1\":1}");
+
 
         //测试错误数据
 
@@ -62,6 +86,12 @@ public class JsonParserTest {
         parseError("{\"dd\":t}");
         parseError("{\"dd\":1,");
 
+        //测试多行错误
+        try {
+            new JsonParser(new JsonConfig()).parse("{\nw");
+        } catch (JsonException e) {
+            Assert.assertEquals("cn.inkroom.json.exception.JsonException: Unexpected character w row: 1, col: 1", e.getMessage());
+        }
 
         //不允许最后一个逗号存在
         JsonConfig config = new JsonConfig();

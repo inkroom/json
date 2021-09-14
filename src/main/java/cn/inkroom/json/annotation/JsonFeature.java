@@ -22,7 +22,13 @@ public enum JsonFeature {
      * <br>
      * 默认启用
      */
-    ALLOW_LAST_COMMA(true)
+    ALLOW_LAST_COMMA(true),
+    /**
+     * 转换unicode码
+     * <br>
+     * 默认启用
+     */
+    CONVERT_UNICODE(true),
     ;
 
     /**

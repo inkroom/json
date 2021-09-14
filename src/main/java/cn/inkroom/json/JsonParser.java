@@ -12,7 +12,7 @@ package cn.inkroom.json;
 
 import cn.inkroom.json.annotation.JsonConfig;
 import cn.inkroom.json.annotation.JsonFeature;
-import cn.inkroom.json.reader.SingleLineTokenReader;
+import cn.inkroom.json.reader.StringTokenReader;
 import cn.inkroom.json.reader.TokenReader;
 import cn.inkroom.json.value.JsonString;
 
@@ -31,9 +31,14 @@ public class JsonParser {
         this.config = config;
     }
 
-    public JsonElement parse(String json) {
 
-        TokenReader reader = new SingleLineTokenReader(json);
+    public JsonElement parse(String json) {
+        TokenReader reader = new StringTokenReader(json, config);
+        return parse(reader);
+    }
+
+    public JsonElement parse(TokenReader reader) {
+
 
         Stack<JsonElement> stack = new Stack<>();
 

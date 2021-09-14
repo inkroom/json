@@ -11,9 +11,17 @@
 package cn.inkroom.json.reader;
 
 import cn.inkroom.json.Token;
+import cn.inkroom.json.annotation.JsonConfig;
 import cn.inkroom.json.exception.JsonException;
 
 public interface TokenReader {
+
+    /**
+     * 设置配置项
+     *
+     * @param config
+     */
+    void setConfig(JsonConfig config);
 
     /**
      * 获取下一个token

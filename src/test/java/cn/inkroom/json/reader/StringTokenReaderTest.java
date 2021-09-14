@@ -10,26 +10,30 @@
 
 package cn.inkroom.json.reader;
 
+import cn.inkroom.json.annotation.JsonConfig;
 import org.junit.Test;
 
-import java.util.function.Function;
-
-import static org.junit.Assert.*;
-
-public class SingleLineTokenReaderTest extends TokenReaderTest {
+public class StringTokenReaderTest extends TokenReaderTest {
 
     @Test
     public void readNumber() {
-        super.readNumber(SingleLineTokenReader::new);
+        super.readNumber(s -> new StringTokenReader(s, new JsonConfig()));
     }
 
     @Test
     public void readBoolean() {
-        super.readBoolean(SingleLineTokenReader::new);
+        super.readBoolean(s -> new StringTokenReader(s, new JsonConfig()));
     }
 
     @Test
     public void readNull() {
-        super.readNull(SingleLineTokenReader::new);
+        super.readNull(s -> new StringTokenReader(s, new JsonConfig()));
+    }
+
+    @Test
+    public void readString() {
+        super.readString(s -> new StringTokenReader(s, new JsonConfig()));
+
+
     }
 }

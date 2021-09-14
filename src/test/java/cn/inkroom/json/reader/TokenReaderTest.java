@@ -11,6 +11,8 @@
 package cn.inkroom.json.reader;
 
 import cn.inkroom.json.Token;
+import cn.inkroom.json.annotation.JsonConfig;
+import cn.inkroom.json.annotation.JsonFeature;
 import cn.inkroom.json.exception.JsonException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +22,78 @@ import java.util.function.Function;
 import static org.junit.Assert.*;
 
 public class TokenReaderTest {
+
+    /**
+     * 读取字符串，要求能识别特殊字符
+     */
+    public void readString(Function<String, TokenReader> function) {
+
+        readString(function, "\"1\"", "1");
+        readString(function, "\"1abcd\"", "1abcd");
+        readString(function, "\"\\t\"", "\t");
+        readString(function, "\"\\rss\\t\\nds\\b32\\f\"", "\rss\t\nds\b32\f");
+        readString(function, "\"中文\\u5b66\\u4e60教材15.6\"", "中文学习教材15.6");
+        readString(function, "\"中文\\u5b66\\u4e60fw教材15.6\"", "中文学习fw教材15.6");
+
+
+        //测试错误字符串
+
+        readStringError(function, "\"dssawe");
+        readStringError(function, "\"\\u222");
+        readStringError(function, "\"\\uwdus\"");
+        readStringError(function, "\"\\uwdu433s\"");
+
+
+        //测试不转换unicode
+        JsonConfig config = new JsonConfig();
+        config.disable(JsonFeature.CONVERT_UNICODE);
+
+        TokenReader apply = function.apply("\"中文\\u5b66\\u4e60fw教材15.6\"");
+        apply.setConfig(config);
+
+        Assert.assertEquals(Token.DOCUMENT_START, apply.readNextToken());
+        Assert.assertEquals(Token.TEXT, apply.readNextToken());
+        Assert.assertEquals("中文\\u5b66\\u4e60fw教材15.6", apply.readString());
+        Assert.assertEquals(Token.DOCUMENT_END, apply.readNextToken());
+
+        apply = function.apply("\"中文\\u5M66\\u4e60fw教材15.6\"");
+        apply.setConfig(config);
+        Assert.assertEquals(Token.DOCUMENT_START, apply.readNextToken());
+        Assert.assertEquals(Token.TEXT, apply.readNextToken());
+        try {
+            apply.readString();
+            Assert.fail("没有检测出非法的unicode码");
+        } catch (JsonException e) {
+            Assert.assertEquals("Unexpected character M row: 0, col: 6", e.getMessage());
+        }
+
+    }
+
+
+    private void readString(Function<String, TokenReader> function, String json, String except) {
+
+        TokenReader apply = function.apply(json);
+
+        Assert.assertEquals(Token.DOCUMENT_START, apply.readNextToken());
+        Assert.assertEquals(Token.TEXT, apply.readNextToken());
+        Assert.assertEquals(except, apply.readString());
+        Assert.assertEquals(Token.DOCUMENT_END, apply.readNextToken());
+
+    }
+
+    private void readStringError(Function<String, TokenReader> function, String json) {
+        try {
+            TokenReader apply = function.apply(json);
+            Assert.assertEquals(Token.DOCUMENT_START, apply.readNextToken());
+            Assert.assertEquals(Token.TEXT, apply.readNextToken());
+            apply.readString();
+            Assert.assertEquals(Token.DOCUMENT_END, apply.readNextToken());
+        } catch (JsonException e) {
+            return;
+        }
+        Assert.fail("应该出现的异常没有出现 " + json);
+    }
+
 
     /**
      * 测试数字读取，保证能检测到非法数据
