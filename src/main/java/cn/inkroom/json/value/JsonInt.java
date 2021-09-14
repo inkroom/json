@@ -33,7 +33,10 @@ public class JsonInt implements JsonElement {
     public void setValue(int value) {
         this.value = value;
     }
-
+    @Override
+    public Type getType() {
+        return Type.Int;
+    }
     @Override
     public String toString() {
         return getValue().toString();

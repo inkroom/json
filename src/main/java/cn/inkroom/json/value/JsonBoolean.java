@@ -31,6 +31,11 @@ public class JsonBoolean implements JsonElement {
     }
 
     @Override
+    public Type getType() {
+        return Type.Boolean;
+    }
+
+    @Override
     public Boolean getValue() {
         return value;
     }

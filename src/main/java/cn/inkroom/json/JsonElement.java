@@ -10,58 +10,100 @@
 
 package cn.inkroom.json;
 
+import cn.inkroom.json.exception.JsonTypeException;
 import cn.inkroom.json.value.*;
 
 public interface JsonElement {
 
+    /**
+     * 返回当前数据格式类型
+     *
+     * @return
+     */
+    Type getType();
 
     Object getValue();
 
     default JsonString getAsJsonString() {
+        if (getType() != Type.String)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成String");
         return ((JsonString) this);
     }
 
     default JsonBoolean getAsJsonBoolean() {
+        if (getType() != Type.Boolean)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Boolean");
         return ((JsonBoolean) this);
     }
 
     default JsonArray getAsJsonArray() {
+        if (getType() != Type.Array)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Array");
         return ((JsonArray) this);
     }
 
     default JsonInt getAsJsonInt() {
+        if (getType() != Type.Int)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成String");
         return ((JsonInt) this);
     }
 
     default JsonLong getAsJsonLong() {
+        if (getType() != Type.String)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Int");
         return (JsonLong) this;
     }
 
     default JsonDouble getAsJsonDouble() {
+        if (getType() != Type.Double)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Double");
         return ((JsonDouble) this);
     }
 
     default JsonNull getAsJsonNull() {
+        if (getType() != Type.Null)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Null");
         return ((JsonNull) this);
     }
 
     default JsonObject getAsJsonObject() {
+        if (getType() != Type.Object)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Object");
         return ((JsonObject) this);
     }
 
-    default JsonBigInteger getAsJsonBitInteger() {
+    default JsonBigInteger getAsJsonBigInteger() {
+        if (getType() != Type.BigInteger && getType() != Type.Int && getType() != Type.Long)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成BigInteger");
         if (this instanceof JsonInt) {
             return new JsonBigInteger(((JsonInt) this).getValue());
-        }else if(this instanceof JsonLong){
+        } else if (this instanceof JsonLong) {
             return new JsonBigInteger(((JsonLong) this).getValue());
         }
         return ((JsonBigInteger) this);
     }
 
     default JsonBigDecimal getAsJsonBigDecimal() {
+        if (getType() != Type.BigDecimal && getType() != Type.Double)
+            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成BigDecimal");
         if (this instanceof JsonDouble) {
             return new JsonBigDecimal(((JsonDouble) this).getValue());
         }
         return ((JsonBigDecimal) this);
     }
+
+    enum Type {
+        Object,
+        Array,
+        Int,
+        Long,
+        Null,
+        Double,
+        String,
+        BigInteger,
+        BigDecimal,
+        Boolean,
+
+    }
+
 }

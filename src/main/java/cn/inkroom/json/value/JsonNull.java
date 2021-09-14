@@ -14,9 +14,17 @@ import cn.inkroom.json.JsonElement;
 
 public class JsonNull implements JsonElement {
 
-
-    public Object getValue() {
+    /**
+     * 固定返回null
+     *
+     * @return
+     */
+    public String getValue() {
         return "null";
+    }
+    @Override
+    public Type getType() {
+        return Type.Null;
     }
 
     @Override

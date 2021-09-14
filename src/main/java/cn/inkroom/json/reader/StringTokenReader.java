@@ -13,7 +13,7 @@ package cn.inkroom.json.reader;
 import cn.inkroom.json.Token;
 import cn.inkroom.json.annotation.JsonConfig;
 import cn.inkroom.json.annotation.JsonFeature;
-import cn.inkroom.json.exception.JsonException;
+import cn.inkroom.json.exception.JsonParseException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -271,8 +271,8 @@ public class StringTokenReader implements TokenReader {
     }
 
     @Override
-    public void throwError(Token token) throws RuntimeException {
-        throw new JsonException("Unexpected character " + now() + " row: " + row + ", col: " + col);
+    public void throwError(Token token) throws JsonParseException {
+        throw new JsonParseException("Unexpected character " + now() + " row: " + row + ", col: " + col);
 
     }
 

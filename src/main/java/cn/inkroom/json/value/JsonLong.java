@@ -21,6 +21,11 @@ public class JsonLong implements JsonElement {
     }
 
     @Override
+    public Type getType() {
+        return Type.Long;
+    }
+
+    @Override
     public Long getValue() {
         return value;
     }

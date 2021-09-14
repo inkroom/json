@@ -12,7 +12,7 @@ package cn.inkroom.json.reader;
 
 import cn.inkroom.json.Token;
 import cn.inkroom.json.annotation.JsonConfig;
-import cn.inkroom.json.exception.JsonException;
+import cn.inkroom.json.exception.JsonParseException;
 
 public interface TokenReader {
 
@@ -45,8 +45,8 @@ public interface TokenReader {
      * 读取到不合法的数据，抛出异常
      *
      * @param token 当前的token
-     * @throws JsonException
+     * @throws JsonParseException 当出现格式错误时
      */
-    void throwError(Token token) throws JsonException;
+    void throwError(Token token) throws JsonParseException;
 
 }

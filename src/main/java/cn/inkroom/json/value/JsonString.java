@@ -32,6 +32,11 @@ public class JsonString implements JsonElement {
     }
 
     @Override
+    public Type getType() {
+        return Type.String;
+    }
+
+    @Override
     public String toString() {
         return "\"" + getValue() + "\"";
     }

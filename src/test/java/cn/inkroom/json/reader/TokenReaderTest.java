@@ -14,7 +14,7 @@ import cn.inkroom.json.JsonFactory;
 import cn.inkroom.json.Token;
 import cn.inkroom.json.annotation.JsonConfig;
 import cn.inkroom.json.annotation.JsonFeature;
-import cn.inkroom.json.exception.JsonException;
+import cn.inkroom.json.exception.JsonParseException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -64,7 +64,7 @@ public class TokenReaderTest {
         try {
             apply.readString();
             Assert.fail("没有检测出非法的unicode码");
-        } catch (JsonException e) {
+        } catch (JsonParseException e) {
             Assert.assertEquals("Unexpected character M row: 0, col: 6", e.getMessage());
         }
 
@@ -89,7 +89,7 @@ public class TokenReaderTest {
             Assert.assertEquals(Token.TEXT, apply.readNextToken());
             apply.readString();
             Assert.assertEquals(Token.DOCUMENT_END, apply.readNextToken());
-        } catch (JsonException e) {
+        } catch (JsonParseException e) {
             return;
         }
         Assert.fail("应该出现的异常没有出现 " + json);
@@ -221,7 +221,7 @@ public class TokenReaderTest {
             Assert.assertEquals(Token.NULL, apply.readNextToken());
             Assert.assertNull(apply.readNull());
             Assert.assertEquals(Token.DOCUMENT_END, apply.readNextToken());
-        } catch (JsonException e) {
+        } catch (JsonParseException e) {
             return;
         }
         Assert.fail("应该出现的异常没有出现 " + json);
@@ -245,7 +245,7 @@ public class TokenReaderTest {
             Assert.assertEquals(Token.BOOLEAN, apply.readNextToken());
             apply.readBoolean();
             Assert.assertEquals(Token.DOCUMENT_END, apply.readNextToken());
-        } catch (JsonException e) {
+        } catch (JsonParseException e) {
             return;
         }
         Assert.fail("应该出现的异常没有出现 " + json);
@@ -271,7 +271,7 @@ public class TokenReaderTest {
             Assert.assertEquals(Token.NUMBER, apply.readNextToken());
             apply.readNumber();
             Assert.assertEquals(Token.DOCUMENT_END, apply.readNextToken());
-        } catch (JsonException e) {
+        } catch (JsonParseException e) {
             return;
         }
         Assert.fail("应该出现的异常没有出现 " + json);

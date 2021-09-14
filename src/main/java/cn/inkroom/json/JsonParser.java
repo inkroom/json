@@ -38,10 +38,7 @@ public class JsonParser {
     }
 
     public JsonElement parse(TokenReader reader) {
-
-
         Stack<JsonElement> stack = new Stack<>();
-
 
         /*
         token 和 状态是两个东西，一个状态应该对应多个token。意思是可能读取到不同的token，但是都会转向相同的状态

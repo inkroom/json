@@ -32,6 +32,11 @@ public class JsonBigDecimal implements JsonElement {
     }
 
     @Override
+    public Type getType() {
+        return Type.BigDecimal;
+    }
+
+    @Override
     public BigDecimal getValue() {
         return value;
     }
