@@ -12,7 +12,10 @@ package cn.inkroom.json;
 
 import cn.inkroom.json.value.*;
 
-class JsonFactory {
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+public class JsonFactory {
 
 
     public static JsonElement createValue(Object value) {
@@ -31,7 +34,15 @@ class JsonFactory {
         if (value instanceof Boolean) {
             return new JsonBoolean(((Boolean) value));
         }
-
+        if (value instanceof BigDecimal) {
+            return new JsonBigDecimal(((BigDecimal) value));
+        }
+        if (value instanceof BigInteger) {
+            return new JsonBigInteger(((BigInteger) value));
+        }
+        if (value instanceof Long) {
+            return new JsonLong(((Long) value));
+        }
         return null;
     }
 

@@ -33,6 +33,10 @@ public interface JsonElement {
         return ((JsonInt) this);
     }
 
+    default JsonLong getAsJsonLong() {
+        return (JsonLong) this;
+    }
+
     default JsonDouble getAsJsonDouble() {
         return ((JsonDouble) this);
     }
@@ -43,5 +47,21 @@ public interface JsonElement {
 
     default JsonObject getAsJsonObject() {
         return ((JsonObject) this);
+    }
+
+    default JsonBigInteger getAsJsonBitInteger() {
+        if (this instanceof JsonInt) {
+            return new JsonBigInteger(((JsonInt) this).getValue());
+        }else if(this instanceof JsonLong){
+            return new JsonBigInteger(((JsonLong) this).getValue());
+        }
+        return ((JsonBigInteger) this);
+    }
+
+    default JsonBigDecimal getAsJsonBigDecimal() {
+        if (this instanceof JsonDouble) {
+            return new JsonBigDecimal(((JsonDouble) this).getValue());
+        }
+        return ((JsonBigDecimal) this);
     }
 }

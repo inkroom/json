@@ -10,6 +10,7 @@
 
 package cn.inkroom.json.reader;
 
+import cn.inkroom.json.JsonFactory;
 import cn.inkroom.json.Token;
 import cn.inkroom.json.annotation.JsonConfig;
 import cn.inkroom.json.annotation.JsonFeature;
@@ -119,8 +120,19 @@ public class TokenReaderTest {
         readNumber(function, "9328  \t", "9328");
 
 
+        //测试超限数据
+        readNumber(function, "2389234345473348297429", "2389234345473348297429");
+        readNumber(function, "2389234345473348297429.2345354333", "2389234345473348297429.2345354333");
+
         // 测试科学计数法
 
+        readNumber(function, "3e3", "3000");
+        readNumber(function, "4E3", "4000");
+        readNumber(function, "3.3e3", "3300");
+        readNumber(function, "9.4E32", "940000000000000000000000000000000");
+        readNumber(function, "-9.4E12", "-9400000000000");
+        readNumber(function, "9.4E-12", "0.0000000000094");
+        readNumber(function, "-8.7E-43", "-0.00000000000000000000000000000000000000000087");
 
         //测试错误数据
         readNumberError(function, "-");
@@ -133,6 +145,11 @@ public class TokenReaderTest {
         readNumberError(function, "-28.p");
         readNumberError(function, "28.372.8");
         readNumberError(function, "28.372.8ds");
+        readNumberError(function, "-.54");
+        readNumberError(function,"32e33e");
+        readNumberError(function,"7ee");
+        readNumberError(function,"7.e");
+        readNumberError(function,"7.4e-");
 
         // 中间不允许有空格
         readNumberError(function, "93 28");
@@ -238,7 +255,7 @@ public class TokenReaderTest {
         TokenReader apply = function.apply(json);
         Assert.assertEquals(Token.DOCUMENT_START, apply.readNextToken());
         Assert.assertEquals(Token.NUMBER, apply.readNextToken());
-        Assert.assertEquals(except, apply.readNumber().toString());
+        Assert.assertEquals(except, JsonFactory.createValue(apply.readNumber()).toString());
         Assert.assertEquals(Token.DOCUMENT_END, apply.readNextToken());
 
     }

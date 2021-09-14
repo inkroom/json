@@ -15,6 +15,9 @@ import cn.inkroom.json.annotation.JsonConfig;
 import cn.inkroom.json.annotation.JsonFeature;
 import cn.inkroom.json.exception.JsonException;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 
 /**
  * 直接读取字符串的reader
@@ -117,6 +120,7 @@ public class StringTokenReader implements TokenReader {
     public Number readNumber() {
         StringBuilder builder = new StringBuilder(Character.toString(now()));
         boolean hasPoint = false;//是否读取到小数点
+        boolean hasE = false;
         boolean hasWhiteSpace = false;
         while (hasMore()) {
 
@@ -137,6 +141,21 @@ public class StringTokenReader implements TokenReader {
                 }
             } else if (c == ',' || c == '}' || c == ']') {//数字读取完成了
                 break;
+            } else if (c == 'e' || c == 'E') {
+                if (hasE) {
+                    throwError(null);
+                } else {
+                    hasE = true;
+                    builder.append('e');//只使用小写字母
+                    next();
+                }
+            } else if (c == '-' || c == '+') {
+                if (hasE) {
+                    builder.append(c);
+                    next();
+                } else {
+                    throwError(null);
+                }
             } else if (isWhiteSpace(c)) {//允许后面有空白字符，但是不允许中间存在；前面的空白字符在之前的获取Token的过程中已经去除了
                 hasWhiteSpace = true;
                 next();
@@ -145,14 +164,22 @@ public class StringTokenReader implements TokenReader {
             }
 
         }
-        int i = builder.indexOf(".");
-        if (i == builder.length() - 1) {//最后一位是小数点，数字非法
+
+        char last = builder.charAt(builder.length() - 1);
+        if (last > '9' || last < '0') {//不正确的结尾
             throwError(null);
         }
-        if (i != -1) {
-            return Double.parseDouble(builder.toString());
+
+        if (hasPoint || hasE) {//有小数点或者使用了科学计数法
+            //合法小数转换成double不会报错，但是数据直接不正确，只能直接用高精度，然后在使用的时候再处理成double
+            return new BigDecimal(builder.toString());
         }
-        return Integer.parseInt(builder.toString());
+        try {
+            return Integer.parseInt(builder.toString());
+        } catch (NumberFormatException e) {
+            //大概率就是数字超限，转换成大数
+            return new BigInteger(builder.toString());
+        }
     }
 
     @Override
