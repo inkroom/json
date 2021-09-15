@@ -16,8 +16,6 @@ import cn.inkroom.json.exception.JsonException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class JsonParserTest {
 
     /**
@@ -193,7 +191,7 @@ public class JsonParserTest {
     public void parse(JsonConfig config, String json, String except) {
         JsonElement element = new JsonParser(config).parse(json);
 
-        assertEquals(except, element.toString());
+        Assert.assertEquals(except, element.toString());
 
     }
 

@@ -16,11 +16,8 @@ import cn.inkroom.json.annotation.JsonConfig;
 import cn.inkroom.json.annotation.JsonFeature;
 import cn.inkroom.json.exception.JsonParseException;
 import org.junit.Assert;
-import org.junit.Test;
 
 import java.util.function.Function;
-
-import static org.junit.Assert.*;
 
 public class TokenReaderTest {
 
