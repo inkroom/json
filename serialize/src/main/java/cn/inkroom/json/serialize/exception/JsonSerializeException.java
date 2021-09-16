@@ -8,34 +8,30 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.reader;
+package cn.inkroom.json.serialize.exception;
 
-import cn.inkroom.json.annotation.JsonConfig;
-import org.junit.Test;
+import cn.inkroom.json.exception.JsonException;
 
-import java.io.Serializable;
-
-public class StringTokenReaderTest extends TokenReaderTest implements Serializable {
-
-    @Test
-    public void readNumber() {
-        super.readNumber(s -> new StringTokenReader(s, new JsonConfig()));
+/**
+ * 序列化异常
+ */
+public class JsonSerializeException extends JsonException {
+    public JsonSerializeException() {
     }
 
-    @Test
-    public void readBoolean() {
-        super.readBoolean(s -> new StringTokenReader(s, new JsonConfig()));
+    public JsonSerializeException(String message) {
+        super(message);
     }
 
-    @Test
-    public void readNull() {
-        super.readNull(s -> new StringTokenReader(s, new JsonConfig()));
+    public JsonSerializeException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    @Test
-    public void readString() {
-        super.readString(s -> new StringTokenReader(s, new JsonConfig()));
+    public JsonSerializeException(Throwable cause) {
+        super(cause);
+    }
 
-
+    public JsonSerializeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

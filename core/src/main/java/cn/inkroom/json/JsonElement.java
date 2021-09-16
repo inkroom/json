@@ -13,6 +13,11 @@ package cn.inkroom.json;
 import cn.inkroom.json.exception.JsonTypeException;
 import cn.inkroom.json.value.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Collection;
+import java.util.List;
+
 public interface JsonElement {
 
     /**
@@ -104,6 +109,40 @@ public interface JsonElement {
         BigDecimal,
         Boolean,
 
+
+        ;
+
+        /**
+         * 将class对象映射到json类型
+         *
+         * @param c
+         * @return
+         */
+        public static Type convertClass2Type(Class c) {
+            if (int.class.isAssignableFrom(c) || Integer.class.isAssignableFrom(c)) {
+                return Int;
+            } else if (char.class.isAssignableFrom(c) || java.lang.CharSequence.class.isAssignableFrom(c)) {
+                return String;
+            } else if (boolean.class.isAssignableFrom(c) || java.lang.Boolean.class.isAssignableFrom(c)) {
+                return Boolean;
+            } else if (double.class.isAssignableFrom(c) || float.class.isAssignableFrom(c) || Float.class.isAssignableFrom(c) || java.lang.Double.class.isAssignableFrom(c)) {
+                return Double;
+            } else if (long.class.isAssignableFrom(c) || java.lang.Long.class.isAssignableFrom(c)) {
+                return Long;
+            } else if (java.math.BigDecimal.class.isAssignableFrom(c)) {
+                return BigDecimal;
+            } else if (java.math.BigInteger.class.isAssignableFrom(c)) {
+                return BigInteger;
+            } else if (c.isArray()) {
+                return Array;
+            } else if (Collection.class.isAssignableFrom(c)) {
+                return Array;
+            } else {
+                return Object;
+            }
+
+
+        }
     }
 
 }

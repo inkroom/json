@@ -8,34 +8,41 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.reader;
+package cn.inkroom.json.serialize;
 
-import cn.inkroom.json.annotation.JsonConfig;
+import cn.inkroom.json.JsonParser;
+import cn.inkroom.json.serialize.example.Demo;
 import org.junit.Test;
 
-import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-public class StringTokenReaderTest extends TokenReaderTest implements Serializable {
+import static org.junit.Assert.*;
 
-    @Test
-    public void readNumber() {
-        super.readNumber(s -> new StringTokenReader(s, new JsonConfig()));
-    }
-
-    @Test
-    public void readBoolean() {
-        super.readBoolean(s -> new StringTokenReader(s, new JsonConfig()));
-    }
+public class JsonMapperTest {
 
     @Test
-    public void readNull() {
-        super.readNull(s -> new StringTokenReader(s, new JsonConfig()));
-    }
+    public void write() {
 
-    @Test
-    public void readString() {
-        super.readString(s -> new StringTokenReader(s, new JsonConfig()));
+        Demo d = new Demo();
+        d.setV9(Arrays.asList(new Demo(), new Demo()));
+        Map<String, Demo> v = new HashMap<>();
+        v.put("v12", new Demo());
+        d.setV10(v);
 
+        JsonMapper mapper = new JsonMapper();
+
+        //输出复合类型
+        String write = mapper.write(d);
+        System.out.println(write);
+        new JsonParser().parse(write);
+
+        //测试map类型
+        String json = mapper.write(v);
+        System.out.println(json);
+        new JsonParser().parse(json);
 
     }
 }
