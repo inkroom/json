@@ -13,6 +13,7 @@ package cn.inkroom.json.serialize;
 import cn.inkroom.json.JsonElement;
 
 import java.lang.reflect.Method;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -60,6 +61,17 @@ public class SerializeClass {
                 }
             }
 
+
+            Comparator<Property> c = (o1, o2) -> {
+                if (o1.getName().length() == o2.getName().length()) {
+                    return o1.getName().compareTo(o2.getName());
+                } else {
+                    return o1.getName().length() > o2.getName().length() ? 1 : -1;
+                }
+            };
+
+            getters.sort(c);
+            setters.sort(c);
 
         }
 

@@ -13,9 +13,6 @@ package cn.inkroom.json.serialize;
 import cn.inkroom.json.JsonElement;
 
 import java.lang.reflect.Method;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Property {
     /**
@@ -35,8 +32,47 @@ public class Property {
      */
     JsonElement.Type type;
 
+    Class realClass;
 
-    static Pattern FIELD_NAME = Pattern.compile("[get|set|is](.*)?");
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public Boolean getGetter() {
+        return isGetter;
+    }
+
+    public void setGetter(Boolean getter) {
+        isGetter = getter;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public JsonElement.Type getType() {
+        return type;
+    }
+
+    public void setType(JsonElement.Type type) {
+        this.type = type;
+    }
+
+    public Class getRealClass() {
+        return realClass;
+    }
+
+    public void setRealClass(Class realClass) {
+        this.realClass = realClass;
+    }
 
     /**
      * 从get、set方法中获取field name
@@ -82,7 +118,7 @@ public class Property {
         }
 
         String field = getFieldName(name);
-        System.out.println(name + " " + field);
+//        System.out.println(name + " " + field);
         if (field != null) {
 
             if (!name.startsWith("set")) {
@@ -102,7 +138,7 @@ public class Property {
                 //处理返回值类型
                 property.type = JsonElement.Type.convertClass2Type(method.getReturnType());
 
-                System.out.println(method.getName() + " " + method.getReturnType().getName() + "  " + property.type);
+//                System.out.println(method.getName() + " " + method.getReturnType().getName() + "  " + property.type);
 
             }
 

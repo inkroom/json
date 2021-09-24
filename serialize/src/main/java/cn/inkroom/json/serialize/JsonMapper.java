@@ -30,6 +30,31 @@ public class JsonMapper {
      */
     private JsonConfig config = null;
 
+    private SerializerProvider provider;
+
+    public JsonMapper() {
+        this.config = new JsonConfig();
+        provider = new SerializerProvider(this.config);
+    }
+
+    public JsonMapper(JsonConfig config) {
+        this.config = config;
+        provider = new SerializerProvider(this.config);
+    }
+
+    public JsonMapper(JsonConfig config, SerializerProvider provider) {
+        this.config = config;
+        this.provider = provider;
+    }
+
+    public JsonConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(JsonConfig config) {
+        this.config = config;
+    }
+
     /**
      * 将对象转换成json
      *
@@ -43,23 +68,11 @@ public class JsonMapper {
         if (java instanceof JsonElement) {
             return java.toString();
         }
-        try {
-            if (java instanceof Number) {
-                return java.toString();
-            } else if (java instanceof CharSequence) {
-                return "\"" + java + "\"";
-            } else if (java instanceof Map) {
-                return writeMap(((Map<?, ?>) java));
-            } else if (java instanceof Collection) {
-                return writeList(((Collection<?>) java));
-            } else {
-                return writeObject(java);
-            }
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new JsonSerializeException(e);
-        }
 
+        JsonWriter writer = new JsonWriter();
+        provider.findSerializer(java.getClass()).serialize(java, writer, provider);
 
+        return writer.toString();
     }
 
 
@@ -119,14 +132,14 @@ public class JsonMapper {
     }
 
     private String writeObject(Property p, Object java) throws InvocationTargetException, IllegalAccessException {
-        if (java instanceof Map){
+        if (java instanceof Map) {
             return writeMap(((Map<?, ?>) java));
         }
         Object invoke = p.method.invoke(java);
         if (invoke == null) {
             return "null";
         }
-        if (invoke instanceof Map){
+        if (invoke instanceof Map) {
             return writeMap(((Map<?, ?>) invoke));
         }
         return writeObject(invoke);

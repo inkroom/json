@@ -11,38 +11,48 @@
 package cn.inkroom.json.serialize;
 
 import cn.inkroom.json.JsonParser;
+import cn.inkroom.json.annotation.JsonConfig;
+import cn.inkroom.json.annotation.JsonFeature;
 import cn.inkroom.json.serialize.example.Demo;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
 
 public class JsonMapperTest {
 
     @Test
-    public void write() {
+    public void write() throws Exception {
 
         Demo d = new Demo();
+        d.setV15(new int[]{93,483,3872});
         d.setV9(Arrays.asList(new Demo(), new Demo()));
         Map<String, Demo> v = new HashMap<>();
         v.put("v12", new Demo());
         d.setV10(v);
 
-        JsonMapper mapper = new JsonMapper();
+        JsonConfig config = new JsonConfig();
+        config.disable(JsonFeature.IGNORE_NULL);
+
+        JsonMapper mapper = new JsonMapper(config);
 
         //输出复合类型
         String write = mapper.write(d);
+
         System.out.println(write);
+        ObjectMapper om = new ObjectMapper();
+        Assert.assertEquals(om.writeValueAsString(d), om.writeValueAsString(om.readValue(write, Demo.class)));
+
         new JsonParser().parse(write);
 
         //测试map类型
-        String json = mapper.write(v);
-        System.out.println(json);
-        new JsonParser().parse(json);
+        Assert.assertEquals(v.toString(), om.readValue(mapper.write(v), new TypeReference<HashMap<String, Demo>>() {
+        }).toString());
 
     }
 }

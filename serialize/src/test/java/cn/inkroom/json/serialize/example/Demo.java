@@ -12,6 +12,7 @@ package cn.inkroom.json.serialize.example;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,16 @@ public class Demo {
 
     private Integer v13Integer;
     private boolean v14 = true;
+
+    private int[] v15;
+
+    public int[] getV15() {
+        return v15;
+    }
+
+    public void setV15(int[] v15) {
+        this.v15 = v15;
+    }
 
     public boolean isV14() {
         return v14;
@@ -128,4 +139,22 @@ public class Demo {
         this.v10 = v10;
     }
 
+    @Override
+    public String toString() {
+        return "Demo{" +
+                "v1=" + v1 +
+                ", v2=" + v2 +
+                ", v3='" + v3 + '\'' +
+                ", v4=" + v4 +
+                ", v5='" + v5 + '\'' +
+                ", v6=" + v6 +
+                ", v7=" + v7 +
+                ", v8=" + v8 +
+                ", v9=" + v9 +
+                ", v10=" + v10 +
+                ", v13Integer=" + v13Integer +
+                ", v14=" + v14 +
+                ", v15=" + Arrays.toString(v15) +
+                '}';
+    }
 }
