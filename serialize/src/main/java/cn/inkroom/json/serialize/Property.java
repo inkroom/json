@@ -10,7 +10,7 @@
 
 package cn.inkroom.json.serialize;
 
-import cn.inkroom.json.JsonElement;
+import cn.inkroom.json.core.JsonElement;
 
 import java.lang.reflect.Method;
 

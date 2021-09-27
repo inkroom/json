@@ -10,14 +10,12 @@
 
 package cn.inkroom.json.serialize;
 
-import cn.inkroom.json.JsonParser;
-import cn.inkroom.json.annotation.JsonConfig;
-import cn.inkroom.json.annotation.JsonFeature;
+import cn.inkroom.json.core.JsonParser;
+import cn.inkroom.json.core.annotation.JsonConfig;
+import cn.inkroom.json.core.annotation.JsonFeature;
 import cn.inkroom.json.serialize.example.Demo;
-import cn.inkroom.json.serialize.util.Base64Util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 

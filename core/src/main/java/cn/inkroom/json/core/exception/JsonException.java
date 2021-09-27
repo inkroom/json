@@ -8,28 +8,30 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.exception;
+package cn.inkroom.json.core.exception;
 
 /**
- * json格式不正确，大概是期望和实际类型不一致
+ * 一些json错误
  */
-public class JsonTypeException extends JsonException {
-    public JsonTypeException() {
+public class JsonException extends RuntimeException{
+
+
+    public JsonException() {
     }
 
-    public JsonTypeException(String message) {
+    public JsonException(String message) {
         super(message);
     }
 
-    public JsonTypeException(String message, Throwable cause) {
+    public JsonException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public JsonTypeException(Throwable cause) {
+    public JsonException(Throwable cause) {
         super(cause);
     }
 
-    public JsonTypeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public JsonException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

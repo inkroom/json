@@ -8,25 +8,38 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.exception;
+package cn.inkroom.json.core.value;
 
-public class JsonConfigException extends JsonException{
-    public JsonConfigException() {
+import cn.inkroom.json.core.JsonElement;
+
+/**
+ * 浮点数
+ */
+public class JsonDouble implements JsonElement {
+
+    private double value;
+
+    public JsonDouble() {
     }
 
-    public JsonConfigException(String message) {
-        super(message);
+    public JsonDouble(double value) {
+        this.value = value;
     }
 
-    public JsonConfigException(String message, Throwable cause) {
-        super(message, cause);
+    public Double getValue() {
+        return value;
     }
 
-    public JsonConfigException(Throwable cause) {
-        super(cause);
+    public void setValue(double value) {
+        this.value = value;
     }
 
-    public JsonConfigException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    @Override
+    public Type getType() {
+        return Type.Double;
+    }
+    @Override
+    public String toString() {
+        return getValue().toString();
     }
 }

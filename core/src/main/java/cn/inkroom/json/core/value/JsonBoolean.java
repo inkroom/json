@@ -8,34 +8,40 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.reader;
+package cn.inkroom.json.core.value;
 
-import cn.inkroom.json.annotation.JsonConfig;
-import org.junit.Test;
+import cn.inkroom.json.core.JsonElement;
 
-import java.io.Serializable;
+/**
+ * 封装一下，用来处理可能存在的单个value
+ */
+public class JsonBoolean implements JsonElement {
 
-public class StringTokenReaderTest extends TokenReaderTest implements Serializable {
+    private boolean value;
 
-    @Test
-    public void readNumber() {
-        super.readNumber(s -> new StringTokenReader(s, new JsonConfig()));
+    public JsonBoolean() {
     }
 
-    @Test
-    public void readBoolean() {
-        super.readBoolean(s -> new StringTokenReader(s, new JsonConfig()));
+    public JsonBoolean(Boolean value) {
+        this.value = value;
     }
 
-    @Test
-    public void readNull() {
-        super.readNull(s -> new StringTokenReader(s, new JsonConfig()));
+    public void setValue(boolean value) {
+        this.value = value;
     }
 
-    @Test
-    public void readString() {
-        super.readString(s -> new StringTokenReader(s, new JsonConfig()));
+    @Override
+    public Type getType() {
+        return Type.Boolean;
+    }
 
+    @Override
+    public Boolean getValue() {
+        return value;
+    }
 
+    @Override
+    public String toString() {
+        return getValue().toString();
     }
 }

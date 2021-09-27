@@ -8,36 +8,33 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.value;
+package cn.inkroom.json.core;
 
-import cn.inkroom.json.JsonElement;
+public enum Token {
+    DOCUMENT_START,
+    DOCUMENT_END,
+    OBJECT_START,
+    OBJECT_END,
+    ARRAY_START,
+    ARRAY_END,
+    BOOLEAN,
+    /**
+     * 冒号
+     */
+    SEP_COLON,
+    /**
+     * 逗号
+     */
+    SEP_COMMA,
+    /**
+     * 引号，接下来是个字符串
+     */
+    TEXT,
+    NUMBER,
+    NULL,
+    /**
+     * 非法
+     */
+    ILL,
 
-public class JsonString implements JsonElement {
-
-    private String value;
-
-    public JsonString() {
-    }
-
-    public JsonString(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public Type getType() {
-        return Type.String;
-    }
-
-    @Override
-    public String toString() {
-        return "\"" + getValue() + "\"";
-    }
 }

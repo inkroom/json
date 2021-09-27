@@ -8,40 +8,25 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.value;
+package cn.inkroom.json.core.value;
 
-import cn.inkroom.json.JsonElement;
+import cn.inkroom.json.core.JsonElement;
 
-/**
- * 封装一下，用来处理可能存在的单个value
- */
-public class JsonBoolean implements JsonElement {
+public class JsonLong implements JsonElement {
 
-    private boolean value;
+    private long value;
 
-    public JsonBoolean() {
-    }
-
-    public JsonBoolean(Boolean value) {
-        this.value = value;
-    }
-
-    public void setValue(boolean value) {
+    public JsonLong(long value) {
         this.value = value;
     }
 
     @Override
     public Type getType() {
-        return Type.Boolean;
+        return Type.Long;
     }
 
     @Override
-    public Boolean getValue() {
+    public Long getValue() {
         return value;
-    }
-
-    @Override
-    public String toString() {
-        return getValue().toString();
     }
 }

@@ -10,7 +10,7 @@
 
 package cn.inkroom.json.serialize.serializer.datetime;
 
-import cn.inkroom.json.annotation.JsonFeature;
+import cn.inkroom.json.core.annotation.JsonFeature;
 import cn.inkroom.json.serialize.JsonSerializer;
 import cn.inkroom.json.serialize.JsonWriter;
 import cn.inkroom.json.serialize.SerializerProvider;
@@ -19,7 +19,6 @@ import cn.inkroom.json.serialize.exception.JsonSerializeException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 public class LocalDateSerializer implements JsonSerializer<LocalDate> {
     @Override

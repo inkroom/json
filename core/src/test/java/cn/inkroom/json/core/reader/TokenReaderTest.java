@@ -8,13 +8,13 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.reader;
+package cn.inkroom.json.core.reader;
 
-import cn.inkroom.json.JsonFactory;
-import cn.inkroom.json.Token;
-import cn.inkroom.json.annotation.JsonConfig;
-import cn.inkroom.json.annotation.JsonFeature;
-import cn.inkroom.json.exception.JsonParseException;
+import cn.inkroom.json.core.JsonFactory;
+import cn.inkroom.json.core.Token;
+import cn.inkroom.json.core.annotation.JsonConfig;
+import cn.inkroom.json.core.annotation.JsonFeature;
+import cn.inkroom.json.core.exception.JsonParseException;
 import org.junit.Assert;
 
 import java.util.function.Function;

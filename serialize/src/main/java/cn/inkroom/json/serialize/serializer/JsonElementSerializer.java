@@ -10,7 +10,7 @@
 
 package cn.inkroom.json.serialize.serializer;
 
-import cn.inkroom.json.JsonElement;
+import cn.inkroom.json.core.JsonElement;
 import cn.inkroom.json.serialize.JsonSerializer;
 import cn.inkroom.json.serialize.JsonWriter;
 import cn.inkroom.json.serialize.SerializerProvider;

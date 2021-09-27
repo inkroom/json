@@ -8,30 +8,45 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.exception;
+package cn.inkroom.json.core.reader;
 
-/**
- * 一些json错误
- */
-public class JsonException extends RuntimeException{
+import cn.inkroom.json.core.Token;
+import cn.inkroom.json.core.annotation.JsonConfig;
+import cn.inkroom.json.core.exception.JsonParseException;
 
+public interface TokenReader {
 
-    public JsonException() {
-    }
+    /**
+     * 设置配置项
+     *
+     * @param config
+     */
+    void setConfig(JsonConfig config);
 
-    public JsonException(String message) {
-        super(message);
-    }
+    /**
+     * 获取下一个token
+     *
+     * @return
+     */
+    Token readNextToken();
 
-    public JsonException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    boolean readBoolean();
 
-    public JsonException(Throwable cause) {
-        super(cause);
-    }
+    Number readNumber();
 
-    public JsonException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+    String readString();
+
+    /**
+     * @return 固定返回null
+     */
+    Object readNull();
+
+    /**
+     * 读取到不合法的数据，抛出异常
+     *
+     * @param token 当前的token
+     * @throws JsonParseException 当出现格式错误时
+     */
+    void throwError(Token token) throws JsonParseException;
+
 }

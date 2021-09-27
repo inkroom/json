@@ -10,9 +10,11 @@
 
 package cn.inkroom.json;
 
-import cn.inkroom.json.annotation.JsonConfig;
-import cn.inkroom.json.annotation.JsonFeature;
-import cn.inkroom.json.exception.JsonException;
+import cn.inkroom.json.core.JsonElement;
+import cn.inkroom.json.core.JsonParser;
+import cn.inkroom.json.core.annotation.JsonConfig;
+import cn.inkroom.json.core.annotation.JsonFeature;
+import cn.inkroom.json.core.exception.JsonException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -88,7 +90,7 @@ public class JsonParserTest {
         try {
             new JsonParser(new JsonConfig()).parse("{\nw");
         } catch (JsonException e) {
-            Assert.assertEquals("cn.inkroom.json.exception.JsonException: Unexpected character w row: 1, col: 1", e.getMessage());
+            Assert.assertEquals("cn.inkroom.json.core.exception.JsonException: Unexpected character w row: 1, col: 1", e.getMessage());
         }
 
         //不允许最后一个逗号存在

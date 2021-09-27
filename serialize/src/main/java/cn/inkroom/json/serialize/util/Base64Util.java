@@ -10,7 +10,7 @@
 
 package cn.inkroom.json.serialize.util;
 
-import cn.inkroom.json.exception.JsonParseException;
+import cn.inkroom.json.core.exception.JsonParseException;
 
 /**
  * base64工具类

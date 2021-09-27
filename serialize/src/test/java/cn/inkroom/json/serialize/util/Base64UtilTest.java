@@ -10,13 +10,10 @@
 
 package cn.inkroom.json.serialize.util;
 
-import cn.inkroom.json.exception.JsonParseException;
+import cn.inkroom.json.core.exception.JsonParseException;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import static org.junit.Assert.*;
 

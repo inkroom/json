@@ -8,25 +8,34 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.value;
+package cn.inkroom.json.core.value;
 
-import cn.inkroom.json.JsonElement;
+import cn.inkroom.json.core.JsonElement;
 
-public class JsonLong implements JsonElement {
+import java.util.Date;
 
-    private long value;
+/**
+ * 日期类的设置
+ */
+public class JsonDate implements JsonElement {
 
-    public JsonLong(long value) {
+    private Date value;
+
+    public JsonDate(Date value) {
         this.value = value;
+    }
+
+    public JsonDate(long value) {
+        this.value = new Date(value);
     }
 
     @Override
     public Type getType() {
-        return Type.Long;
+        return Type.Date;
     }
 
     @Override
-    public Long getValue() {
+    public Date getValue() {
         return value;
     }
 }

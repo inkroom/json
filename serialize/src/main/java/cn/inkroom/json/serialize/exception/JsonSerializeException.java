@@ -10,7 +10,7 @@
 
 package cn.inkroom.json.serialize.exception;
 
-import cn.inkroom.json.exception.JsonException;
+import cn.inkroom.json.core.exception.JsonException;
 
 /**
  * 序列化异常

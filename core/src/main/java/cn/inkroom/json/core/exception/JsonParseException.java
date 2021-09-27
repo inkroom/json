@@ -8,37 +8,28 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.value;
-
-import cn.inkroom.json.JsonElement;
+package cn.inkroom.json.core.exception;
 
 /**
- * 整数
+ * json读取错误，大概率是json格式非法
  */
-public class JsonInt implements JsonElement {
-
-    private int value;
-
-    public JsonInt() {
+public class JsonParseException extends JsonException {
+    public JsonParseException() {
     }
 
-    public JsonInt(int value) {
-        this.value = value;
+    public JsonParseException(String message) {
+        super(message);
     }
 
-    public Integer getValue() {
-        return value;
+    public JsonParseException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    public JsonParseException(Throwable cause) {
+        super(cause);
     }
-    @Override
-    public Type getType() {
-        return Type.Int;
-    }
-    @Override
-    public String toString() {
-        return getValue().toString();
+
+    public JsonParseException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

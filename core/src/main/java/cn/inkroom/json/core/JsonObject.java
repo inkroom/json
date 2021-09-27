@@ -8,11 +8,11 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json;
+package cn.inkroom.json.core;
 
-import cn.inkroom.json.annotation.JsonConfig;
-import cn.inkroom.json.annotation.JsonFeature;
-import cn.inkroom.json.value.*;
+import cn.inkroom.json.core.annotation.JsonConfig;
+import cn.inkroom.json.core.annotation.JsonFeature;
+import cn.inkroom.json.core.value.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

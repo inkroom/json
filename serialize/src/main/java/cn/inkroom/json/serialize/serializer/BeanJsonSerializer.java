@@ -10,7 +10,7 @@
 
 package cn.inkroom.json.serialize.serializer;
 
-import cn.inkroom.json.annotation.JsonFeature;
+import cn.inkroom.json.core.annotation.JsonFeature;
 import cn.inkroom.json.serialize.*;
 import cn.inkroom.json.serialize.exception.JsonSerializeException;
 

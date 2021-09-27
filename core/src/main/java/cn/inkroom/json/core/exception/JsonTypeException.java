@@ -8,34 +8,28 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.value;
-
-import cn.inkroom.json.JsonElement;
-
-import java.util.Date;
+package cn.inkroom.json.core.exception;
 
 /**
- * 日期类的设置
+ * json格式不正确，大概是期望和实际类型不一致
  */
-public class JsonDate implements JsonElement {
-
-    private Date value;
-
-    public JsonDate(Date value) {
-        this.value = value;
+public class JsonTypeException extends JsonException {
+    public JsonTypeException() {
     }
 
-    public JsonDate(long value) {
-        this.value = new Date(value);
+    public JsonTypeException(String message) {
+        super(message);
     }
 
-    @Override
-    public Type getType() {
-        return Type.Date;
+    public JsonTypeException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    @Override
-    public Date getValue() {
-        return value;
+    public JsonTypeException(Throwable cause) {
+        super(cause);
+    }
+
+    public JsonTypeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

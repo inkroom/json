@@ -10,8 +10,8 @@
 
 package cn.inkroom.json.serialize;
 
-import cn.inkroom.json.JsonElement;
-import cn.inkroom.json.annotation.JsonConfig;
+import cn.inkroom.json.core.JsonElement;
+import cn.inkroom.json.core.annotation.JsonConfig;
 import cn.inkroom.json.serialize.serializer.*;
 import cn.inkroom.json.serialize.serializer.array.*;
 

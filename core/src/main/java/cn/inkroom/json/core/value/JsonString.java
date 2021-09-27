@@ -8,38 +8,36 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json.value;
+package cn.inkroom.json.core.value;
 
-import cn.inkroom.json.JsonElement;
+import cn.inkroom.json.core.JsonElement;
 
-/**
- * 浮点数
- */
-public class JsonDouble implements JsonElement {
+public class JsonString implements JsonElement {
 
-    private double value;
+    private String value;
 
-    public JsonDouble() {
+    public JsonString() {
     }
 
-    public JsonDouble(double value) {
+    public JsonString(String value) {
         this.value = value;
     }
 
-    public Double getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
     @Override
     public Type getType() {
-        return Type.Double;
+        return Type.String;
     }
+
     @Override
     public String toString() {
-        return getValue().toString();
+        return "\"" + getValue() + "\"";
     }
 }

@@ -8,21 +8,16 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cn.inkroom.json;
+package cn.inkroom.json.core;
 
-import cn.inkroom.json.annotation.JsonConfig;
-import cn.inkroom.json.exception.JsonTypeException;
-import cn.inkroom.json.value.*;
+import cn.inkroom.json.core.annotation.JsonConfig;
+import cn.inkroom.json.core.exception.JsonTypeException;
+import cn.inkroom.json.core.value.*;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 在执行获取转换时需要特别注意，如果类型不完全匹配的情况下，每次get都是一个全新对象，每个对象存储的数据是一致的
