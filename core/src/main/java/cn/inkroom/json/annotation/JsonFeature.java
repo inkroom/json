@@ -39,6 +39,14 @@ public enum JsonFeature {
      * 将char数组合并成字符串输出；不启用则作为一个数组依次输出为字符串
      */
     COMBINATION_CHAR_ARRAY(true),
+
+    /**
+     * 将byte数组转换成base64；禁用情况下将转成大写的16进制
+     * <br>
+     * 默认启用
+     */
+    BASE64_BYTE_ARRAY(true),
+
     ;
 
     /**

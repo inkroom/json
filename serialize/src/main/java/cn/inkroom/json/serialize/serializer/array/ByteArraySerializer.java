@@ -10,14 +10,34 @@
 
 package cn.inkroom.json.serialize.serializer.array;
 
+import cn.inkroom.json.annotation.JsonFeature;
 import cn.inkroom.json.serialize.JsonSerializer;
 import cn.inkroom.json.serialize.JsonWriter;
 import cn.inkroom.json.serialize.SerializerProvider;
 import cn.inkroom.json.serialize.exception.JsonSerializeException;
+import cn.inkroom.json.serialize.util.Base64Util;
 
 public class ByteArraySerializer implements JsonSerializer<byte[]> {
     @Override
     public void serialize(byte[] value, JsonWriter writer, SerializerProvider provider) throws JsonSerializeException {
-
+        if (provider.getConfig().isEnable(JsonFeature.BASE64_BYTE_ARRAY)) {
+            writer.writeString(Base64Util.encode(value));
+        }
+        //否则转换成16进制表示
+        else
+            writer.writeString(toHex(value));
     }
+
+    private String toHex(byte[] b) {
+
+        char[] src = "0123456789ABCDEF".toCharArray();
+
+        StringBuilder builder = new StringBuilder();
+        for (byte value : b) {
+            builder.append(src[(value & 0xf0) >> 4]).append(src[(value & 0xf]);
+        }
+        return builder.toString();
+    }
+
+
 }

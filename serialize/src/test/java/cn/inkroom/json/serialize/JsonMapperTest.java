@@ -14,8 +14,10 @@ import cn.inkroom.json.JsonParser;
 import cn.inkroom.json.annotation.JsonConfig;
 import cn.inkroom.json.annotation.JsonFeature;
 import cn.inkroom.json.serialize.example.Demo;
+import cn.inkroom.json.serialize.util.Base64Util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,10 +29,24 @@ import java.util.Map;
 public class JsonMapperTest {
 
     @Test
+    public void t() throws Exception {
+
+        ObjectMapper om = new ObjectMapper();
+
+        byte[] b = new byte[]{0,2,3,4,5,6,7,8};
+
+        System.out.println(new String(b));
+        String s = om.writeValueAsString(b);
+
+
+
+    }
+
+    @Test
     public void write() throws Exception {
 
         Demo d = new Demo();
-        d.setV15(new int[]{93,483,3872});
+        d.setV15(new int[]{93, 483, 3872});
         d.setV9(Arrays.asList(new Demo(), new Demo()));
         Map<String, Demo> v = new HashMap<>();
         v.put("v12", new Demo());
