@@ -47,6 +47,12 @@ public enum JsonFeature {
      */
     BASE64_BYTE_ARRAY(true),
 
+    /**
+     * 使用毫秒时间戳存储时间和日期类数据
+     * <br>
+     * 默认不启用，将会格式化为{@link JsonConfig} 中指定的格式
+     */
+    TIME_STAMP(false),
     ;
 
     /**

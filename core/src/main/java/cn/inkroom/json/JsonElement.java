@@ -10,14 +10,23 @@
 
 package cn.inkroom.json;
 
+import cn.inkroom.json.annotation.JsonConfig;
 import cn.inkroom.json.exception.JsonTypeException;
 import cn.inkroom.json.value.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
+/**
+ * 在执行获取转换时需要特别注意，如果类型不完全匹配的情况下，每次get都是一个全新对象，每个对象存储的数据是一致的
+ */
 public interface JsonElement {
 
     /**
@@ -29,57 +38,61 @@ public interface JsonElement {
 
     Object getValue();
 
+    default String toString(JsonConfig config) {
+        return toString();
+    }
+
     default JsonString getAsJsonString() {
         if (getType() != Type.String)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成String");
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.String);
         return ((JsonString) this);
     }
 
     default JsonBoolean getAsJsonBoolean() {
         if (getType() != Type.Boolean)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Boolean");
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.Boolean);
         return ((JsonBoolean) this);
     }
 
     default JsonArray getAsJsonArray() {
         if (getType() != Type.Array)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Array");
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.Array);
         return ((JsonArray) this);
     }
 
     default JsonInt getAsJsonInt() {
         if (getType() != Type.Int)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成String");
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.Int);
         return ((JsonInt) this);
     }
 
     default JsonLong getAsJsonLong() {
-        if (getType() != Type.String)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Int");
+        if (getType() != Type.Long)
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.Long);
         return (JsonLong) this;
     }
 
     default JsonDouble getAsJsonDouble() {
         if (getType() != Type.Double)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Double");
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.Double);
         return ((JsonDouble) this);
     }
 
     default JsonNull getAsJsonNull() {
         if (getType() != Type.Null)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Null");
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.Null);
         return ((JsonNull) this);
     }
 
     default JsonObject getAsJsonObject() {
         if (getType() != Type.Object)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成Object");
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.Object);
         return ((JsonObject) this);
     }
 
     default JsonBigInteger getAsJsonBigInteger() {
         if (getType() != Type.BigInteger && getType() != Type.Int && getType() != Type.Long)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成BigInteger");
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.BigInteger);
         if (this instanceof JsonInt) {
             return new JsonBigInteger(((JsonInt) this).getValue());
         } else if (this instanceof JsonLong) {
@@ -90,11 +103,35 @@ public interface JsonElement {
 
     default JsonBigDecimal getAsJsonBigDecimal() {
         if (getType() != Type.BigDecimal && getType() != Type.Double)
-            throw new JsonTypeException("当前类型为：" + getType().name() + " , 不能转成BigDecimal");
+            throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.BigDecimal);
         if (this instanceof JsonDouble) {
             return new JsonBigDecimal(((JsonDouble) this).getValue());
         }
         return ((JsonBigDecimal) this);
+    }
+
+    default JsonDate getAsJsonDate() {
+        if (getType() == Type.Date) return ((JsonDate) this);
+        if (getType() == Type.Long) return new JsonDate(getAsJsonLong().getValue());
+
+        throw new JsonTypeException("unsupported type cast: " + getType() + " to " + Type.Date);
+    }
+
+    default JsonDate getAsJsonDate(DateFormat f) {
+        try {
+            return getAsJsonDate();
+        } catch (JsonTypeException e) {
+            if (getType() == Type.String) {
+                Date parse = null;
+                try {
+                    parse = f.parse(getAsJsonString().getValue());
+                    return new JsonDate(parse);
+                } catch (ParseException ex) {
+                    throw new JsonTypeException(ex);
+                }
+            }
+        }
+        throw new JsonTypeException("unsupported type cast");
     }
 
     enum Type {
@@ -108,6 +145,7 @@ public interface JsonElement {
         BigInteger,
         BigDecimal,
         Boolean,
+        Date,
 
 
         ;

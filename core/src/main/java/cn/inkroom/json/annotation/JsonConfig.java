@@ -10,8 +10,12 @@
 
 package cn.inkroom.json.annotation;
 
+import cn.inkroom.json.exception.JsonConfigException;
+
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class JsonConfig {
 
@@ -19,24 +23,40 @@ public class JsonConfig {
     /**
      * 启用的feature
      */
-    private List<JsonFeature> enable;
+    private Set<JsonFeature> enable;
+
     /**
      * 关闭的feature
      */
-    private List<JsonFeature> disable;
+    private Set<JsonFeature> disable;
+
+    /**
+     * 时间格式化
+     */
+    private String timeFormat = "HH:mm:ss";
+
+    /**
+     * 日期格式化
+     */
+    private String dateFormat = "YYYY-MM-HH";
+
+    /**
+     * 日期时间格式化，如果数据没有同时包括两类元素就不会使用该配置
+     */
+    private String dateTimeFormat = dateFormat + " " + timeFormat;
 
 
     public JsonConfig() {
-        enable = new LinkedList<>();
-        disable = new LinkedList<>();
+        enable = new LinkedHashSet<>();
+        disable = new LinkedHashSet<>();
 
         // 设置默认的特性
         JsonFeature[] values = JsonFeature.values();
         for (JsonFeature f : values) {
             if (f.isEnable()) {
-                enable.add(f);
+                enable(f);
             } else {
-                disable.add(f);
+                disable(f);
             }
         }
 
@@ -58,9 +78,7 @@ public class JsonConfig {
      * @param feature
      */
     public void enable(JsonFeature feature) {
-        disable.remove(feature);
-        if (!enable.contains(feature))
-            enable.add(feature);
+        enable.add(feature);
     }
 
     /**
@@ -69,12 +87,35 @@ public class JsonConfig {
      * @param feature
      */
     public void disable(JsonFeature feature) {
-
-        if (!disable.contains(feature))
-            disable.add(feature);
-        enable.remove(feature);
-
+        disable.add(feature);
     }
 
+    public String getDateTimeFormat() {
+        return dateTimeFormat;
+    }
 
+    public void setDateTimeFormat(String dateTimeFormat) {
+        if (dateTimeFormat == null) throw new JsonConfigException("format can not be null");
+        this.dateTimeFormat = dateTimeFormat;
+    }
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(String timeFormat) {
+        if (timeFormat == null) throw new JsonConfigException("format can not be null");
+
+        this.timeFormat = timeFormat;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        if (dateFormat == null) throw new JsonConfigException("format can not be null");
+
+        this.dateFormat = dateFormat;
+    }
 }

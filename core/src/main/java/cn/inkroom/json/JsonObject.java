@@ -10,10 +10,14 @@
 
 package cn.inkroom.json;
 
+import cn.inkroom.json.annotation.JsonConfig;
+import cn.inkroom.json.annotation.JsonFeature;
 import cn.inkroom.json.value.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 
 public class JsonObject extends LinkedHashMap<String, JsonElement> implements JsonElement {
@@ -67,6 +71,16 @@ public class JsonObject extends LinkedHashMap<String, JsonElement> implements Js
         return get(key).getAsJsonBigDecimal();
     }
 
+
+    public JsonDate getAsJsonDate(String key) {
+        return get(key).getAsJsonDate();
+    }
+
+    // TODO: 2021/9/27 后续考虑Date格式的自动判断问题
+    public JsonDate getAsJsonDate(String key, String format) {
+        return get(key).getAsJsonDate(new SimpleDateFormat(format));
+    }
+
     /***********************/
 
     public String getAsString(String key) {
@@ -90,7 +104,9 @@ public class JsonObject extends LinkedHashMap<String, JsonElement> implements Js
         return getAsJsonDouble(key).getValue();
     }
 
-
+    public Date getAsDate(String key) {
+        return get(key).getAsJsonDate().getValue();
+    }
 
     /**
      * 返回null
@@ -124,6 +140,23 @@ public class JsonObject extends LinkedHashMap<String, JsonElement> implements Js
 
         builder.append("}");
 
+        return builder.toString();
+    }
+
+    @Override
+    public String toString(JsonConfig config) {
+
+        StringBuilder builder = new StringBuilder("{");
+        forEach((s, o) -> {
+            if (config.isEnable(JsonFeature.IGNORE_NULL) && o == null) {
+                return;
+            }
+            builder.append(s).append(":").append(o.toString()).append(",");
+        });
+        if (builder.length() > 1) {//去除最后的逗号
+            builder.deleteCharAt(builder.length() - 1);
+        }
+        builder.append("}");
         return builder.toString();
     }
 }
