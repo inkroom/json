@@ -12,7 +12,9 @@ package cn.inkroom.json;
 
 import cn.inkroom.json.value.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class JsonArray extends ArrayList<JsonElement> implements JsonElement {
     @Override
@@ -65,13 +67,22 @@ public class JsonArray extends ArrayList<JsonElement> implements JsonElement {
         return get(index).getAsJsonBigDecimal();
     }
 
+    public JsonDate getAsJsonDate(int index) {
+        return get(index).getAsJsonDate();
+    }
+
+    // TODO: 2021/9/27 后续考虑Date格式的自动判断问题
+    public JsonDate getAsJsonDate(int index, String format) {
+        return get(index).getAsJsonDate(new SimpleDateFormat(format));
+    }
+
     /***********************/
 
     public String getAsString(int index) {
         return getAsJsonString(index).getValue();
     }
 
-    public Boolean getAsBoolean(int index) {
+    public boolean getAsBoolean(int index) {
         return getAsJsonBoolean(index).getValue();
     }
 
@@ -79,13 +90,18 @@ public class JsonArray extends ArrayList<JsonElement> implements JsonElement {
         return getAsJsonInt(index).getValue();
     }
 
-    public Long getAsLong(int index) {
+    public long getAsLong(int index) {
         return getAsJsonLong(index).getValue();
     }
 
-    public Double getAsDouble(int index) {
+    public double getAsDouble(int index) {
         return getAsJsonDouble(index).getValue();
     }
+
+    public Date getAsDate(int index) {
+        return get(index).getAsJsonDate().getValue();
+    }
+
 
     @Override
     public String toString() {

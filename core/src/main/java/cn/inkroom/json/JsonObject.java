@@ -87,20 +87,19 @@ public class JsonObject extends LinkedHashMap<String, JsonElement> implements Js
         return getAsJsonString(key).getValue();
     }
 
-    public Boolean getAsBoolean(String key) {
+    public boolean getAsBoolean(String key) {
         return getAsJsonBoolean(key).getValue();
     }
-
 
     public int getAsInt(String key) {
         return getAsJsonInt(key).getValue();
     }
 
-    public Long getAsLong(String key) {
+    public long getAsLong(String key) {
         return getAsJsonLong(key).getValue();
     }
 
-    public Double getAsDouble(String key) {
+    public double getAsDouble(String key) {
         return getAsJsonDouble(key).getValue();
     }
 
