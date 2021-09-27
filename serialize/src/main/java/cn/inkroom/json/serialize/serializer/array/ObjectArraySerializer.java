@@ -15,15 +15,21 @@ import cn.inkroom.json.serialize.JsonWriter;
 import cn.inkroom.json.serialize.SerializerProvider;
 import cn.inkroom.json.serialize.exception.JsonSerializeException;
 
-public class FloatArraySerializer implements JsonSerializer<float[]> {
+/**
+ * 用来处理数组的类对象，也算是一个兜底类
+ */
+public class ObjectArraySerializer implements JsonSerializer<Object[]> {
     @Override
-    public void serialize(float[] value, JsonWriter writer, SerializerProvider provider) throws JsonSerializeException {
+    public void serialize(Object[] value, JsonWriter writer, SerializerProvider provider) throws JsonSerializeException {
+
         writer.startArray();
-        for (float v : value) {
+        for (Object ob : value) {
             writer.flush();
-            writer.writeDouble(v);
+            provider.findSerializer(ob.getClass()).serialize(ob, writer, provider);
             writer.comma();
         }
+
         writer.endArray();
+
     }
 }

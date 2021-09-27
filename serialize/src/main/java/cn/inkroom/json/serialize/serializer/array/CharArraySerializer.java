@@ -22,12 +22,15 @@ public class CharArraySerializer implements JsonSerializer<char[]> {
 
         if (provider.getConfig().isEnable(JsonFeature.COMBINATION_CHAR_ARRAY)) {
             writer.writeString(new String(value));
-        } else
+        } else {
+            writer.startArray();
             for (char c : value) {
                 writer.flush();
                 writer.writeString(String.valueOf(c));
                 writer.comma();
             }
+            writer.endArray();
+        }
 
 
     }

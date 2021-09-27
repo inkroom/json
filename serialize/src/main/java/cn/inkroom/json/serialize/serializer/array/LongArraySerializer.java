@@ -18,9 +18,12 @@ import cn.inkroom.json.serialize.exception.JsonSerializeException;
 public class LongArraySerializer implements JsonSerializer<long[]> {
     @Override
     public void serialize(long[] value, JsonWriter writer, SerializerProvider provider) throws JsonSerializeException {
-        for (int i = 0; i < value.length; i++) {
+        writer.startArray();
+        for (long l : value) {
             writer.flush();
-            writer.writeLong(value[i]);
-            writer.comma();        }
+            writer.writeLong(l);
+            writer.comma();
+        }
+        writer.endArray();
     }
 }

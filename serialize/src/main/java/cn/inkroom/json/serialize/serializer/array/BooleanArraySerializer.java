@@ -18,12 +18,13 @@ import cn.inkroom.json.serialize.exception.JsonSerializeException;
 public class BooleanArraySerializer implements JsonSerializer<boolean[]> {
     @Override
     public void serialize(boolean[] value, JsonWriter writer, SerializerProvider provider) throws JsonSerializeException {
-
+        writer.startArray();
         for (boolean b : value) {
             writer.flush();
             writer.raw(b ? "true" : "false");
             writer.comma();
         }
+        writer.endArray();
 
     }
 }

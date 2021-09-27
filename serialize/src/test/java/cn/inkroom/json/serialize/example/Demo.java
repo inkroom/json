@@ -34,6 +34,52 @@ public class Demo {
     private boolean v14 = true;
 
     private int[] v15;
+    private double[] v16;
+    private Float[] v17 = new Float[]{21f, 32f, Float.valueOf(12f)};
+    private boolean[] v18 = new boolean[]{false, true, Boolean.FALSE, Boolean.TRUE};
+    private byte[] v19 = new byte[]{12, 43, -12, 21, -43};
+    private char[] v20 = new char[]{'3', '5', '7', '9', 'w'};
+    private StringBuilder v21 = new StringBuilder("v21");
+
+    public char[] getV20() {
+        return v20;
+    }
+
+    public double[] getV16() {
+        return v16;
+    }
+
+    public void setV16(double[] v16) {
+        this.v16 = v16;
+    }
+
+    public Float[] getV17() {
+        return v17;
+    }
+
+    public void setV17(Float[] v17) {
+        this.v17 = v17;
+    }
+
+    public boolean[] getV18() {
+        return v18;
+    }
+
+    public void setV18(boolean[] v18) {
+        this.v18 = v18;
+    }
+
+    public byte[] getV19() {
+        return v19;
+    }
+
+    public void setV19(byte[] v19) {
+        this.v19 = v19;
+    }
+
+    public void setV20(char[] v20) {
+        this.v20 = v20;
+    }
 
     public int[] getV15() {
         return v15;

@@ -56,12 +56,11 @@ public class JsonMapperTest {
         config.disable(JsonFeature.IGNORE_NULL);
 
         JsonMapper mapper = new JsonMapper(config);
+        ObjectMapper om = new ObjectMapper();
 
         //输出复合类型
         String write = mapper.write(d);
 
-        System.out.println(write);
-        ObjectMapper om = new ObjectMapper();
         Assert.assertEquals(om.writeValueAsString(d), om.writeValueAsString(om.readValue(write, Demo.class)));
 
         new JsonParser().parse(write);
@@ -69,6 +68,8 @@ public class JsonMapperTest {
         //测试map类型
         Assert.assertEquals(v.toString(), om.readValue(mapper.write(v), new TypeReference<HashMap<String, Demo>>() {
         }).toString());
+
+        //测试数组类型
 
     }
 }

@@ -34,7 +34,7 @@ public class ByteArraySerializer implements JsonSerializer<byte[]> {
 
         StringBuilder builder = new StringBuilder();
         for (byte value : b) {
-            builder.append(src[(value & 0xf0) >> 4]).append(src[(value & 0xf]);
+            builder.append(src[(value & 0xf0) >> 4]).append(src[(value & 0xf)]);
         }
         return builder.toString();
     }

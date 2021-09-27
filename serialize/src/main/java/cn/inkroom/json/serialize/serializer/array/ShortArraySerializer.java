@@ -18,10 +18,12 @@ import cn.inkroom.json.serialize.exception.JsonSerializeException;
 public class ShortArraySerializer implements JsonSerializer<short[]> {
     @Override
     public void serialize(short[] value, JsonWriter writer, SerializerProvider provider) throws JsonSerializeException {
-        for (int i = 0; i < value.length; i++) {
+        writer.startArray();
+        for (short item : value) {
             writer.flush();
-            writer.writeLong(value[i]);
+            writer.writeLong(item);
             writer.comma();
         }
+        writer.endArray();
     }
 }

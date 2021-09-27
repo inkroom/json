@@ -18,10 +18,12 @@ import cn.inkroom.json.serialize.exception.JsonSerializeException;
 public class DoubleArraySerializer implements JsonSerializer<double[]> {
     @Override
     public void serialize(double[] value, JsonWriter writer, SerializerProvider provider) throws JsonSerializeException {
-        for (int i = 0; i < value.length; i++) {
+        writer.startArray();
+        for (double v : value) {
             writer.flush();
-            writer.writeDouble(value[i]);
+            writer.writeDouble(v);
             writer.comma();
         }
+        writer.endArray();
     }
 }

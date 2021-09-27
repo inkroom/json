@@ -57,6 +57,8 @@ public class SerializerProvider {
         register(boolean[].class, new BooleanArraySerializer());
         register(byte[].class, new ByteArraySerializer());
 
+        register(Object[].class, new ObjectArraySerializer());
+
 
         //兜底
 //        register(BeanJsonSerializer.class, new BeanJsonSerializer());
@@ -81,6 +83,7 @@ public class SerializerProvider {
                 return serializerMap.get(next);
             }
         }
+
         // 如果都没有，则使用兜底序列化类
         return new BeanJsonSerializer();
     }
