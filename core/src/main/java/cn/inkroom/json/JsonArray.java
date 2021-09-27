@@ -12,6 +12,8 @@ package cn.inkroom.json;
 
 import cn.inkroom.json.value.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,6 +102,14 @@ public class JsonArray extends ArrayList<JsonElement> implements JsonElement {
 
     public Date getAsDate(int index) {
         return get(index).getAsJsonDate().getValue();
+    }
+
+    public BigDecimal getAsBigDecimal(int index) {
+        return getAsJsonBigDecimal(index).getValue();
+    }
+
+    public BigInteger getAsBigInteger(int index) {
+        return getAsJsonBigInteger(index).getValue();
     }
 
 
