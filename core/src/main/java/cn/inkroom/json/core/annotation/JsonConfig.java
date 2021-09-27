@@ -19,14 +19,10 @@ public class JsonConfig {
 
 
     /**
-     * 启用的feature
+     * 启用的feature，不在数组内的feature都是关闭状态
      */
-    private Set<JsonFeature> enable;
+    private JsonFeature[] enable;
 
-    /**
-     * 关闭的feature
-     */
-    private Set<JsonFeature> disable;
 
     /**
      * 时间格式化
@@ -45,11 +41,11 @@ public class JsonConfig {
 
 
     public JsonConfig() {
-        enable = new LinkedHashSet<>();
-        disable = new LinkedHashSet<>();
+        JsonFeature[] values = JsonFeature.values();
+
+        enable = new JsonFeature[values.length];
 
         // 设置默认的特性
-        JsonFeature[] values = JsonFeature.values();
         for (JsonFeature f : values) {
             if (f.isEnable()) {
                 enable(f);
@@ -67,7 +63,7 @@ public class JsonConfig {
      * @return 是否启用
      */
     public boolean isEnable(JsonFeature feature) {
-        return enable.contains(feature);
+        return enable[feature.ordinal()] != null;
     }
 
     /**
@@ -76,7 +72,7 @@ public class JsonConfig {
      * @param feature
      */
     public void enable(JsonFeature feature) {
-        enable.add(feature);
+        enable[feature.ordinal()] = feature;
     }
 
     /**
@@ -85,7 +81,7 @@ public class JsonConfig {
      * @param feature
      */
     public void disable(JsonFeature feature) {
-        disable.add(feature);
+        enable[feature.ordinal()] = null;
     }
 
     public String getDateTimeFormat() {
