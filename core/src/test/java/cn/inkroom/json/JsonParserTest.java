@@ -158,6 +158,7 @@ public class JsonParserTest {
         parse("true");
         parse("false");
         parse("\"wwww\"");
+        parse(new JsonConfig(), "\"ww\\\nww\"", "\"ww\nww\"");// 测试json5 多行文本
         parse(new JsonConfig(), "'wwww2'", "\"wwww2\"");
         parse("-1");
         parse("0.23");

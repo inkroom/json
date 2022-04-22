@@ -261,6 +261,15 @@ public class StringTokenReader implements TokenReader {
             if (c == '\\') {
                 char n = next();
                 switch (n) {
+                    case '\n':// 支持json5的多行文本
+                        builder.append("\n");
+                        continue;
+                    case '\r':// 支持json5的多行文本
+                        if (hasMore() && next() == '\n') {
+                            builder.append("\n");
+                            continue;
+                        }
+                        break;
                     case '\'':
                     case '"':
                         builder.append(n);
