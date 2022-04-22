@@ -87,6 +87,8 @@ public class StringTokenReader implements TokenReader {
                 return Token.SEP_COLON;
             } else if (datum == '"') {
                 return Token.TEXT;
+            } else if (datum == '\'') {
+                return Token.TEXT;
             } else if (datum == 't') {
                 return Token.BOOLEAN;
             } else if (datum == 'f') {
@@ -252,11 +254,14 @@ public class StringTokenReader implements TokenReader {
     public String readString() {
 
         StringBuilder builder = new StringBuilder();
+        char now = now();// 获取开始的字符，单引号或者双引号
+
         for (; ; ) {
             char c = next();
             if (c == '\\') {
                 char n = next();
                 switch (n) {
+                    case '\'':
                     case '"':
                         builder.append(n);
                         break;
@@ -314,7 +319,7 @@ public class StringTokenReader implements TokenReader {
                     default:
                         throwError(null);
                 }
-            } else if (c == '"') {
+            } else if (c == now) {
                 return builder.toString();
             } else {
                 builder.append(c);

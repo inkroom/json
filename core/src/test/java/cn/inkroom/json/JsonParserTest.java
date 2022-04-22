@@ -158,6 +158,7 @@ public class JsonParserTest {
         parse("true");
         parse("false");
         parse("\"wwww\"");
+        parse(new JsonConfig(), "'wwww2'", "\"wwww2\"");
         parse("-1");
         parse("0.23");
 
@@ -203,19 +204,10 @@ public class JsonParserTest {
     public void json5SingDesc() throws Exception {
 
 // 单行注释，允许出现在除 key和value内部的以外的任何位置
-
-        URL resource = getClass().getResource("/json5/singleDesc");
-
-        File file = new File(resource.getFile());
-        String[] list = file.list();
-
-        for (String f : list) {
-            System.out.println("测试文件 = " + f);
-            if (f.endsWith(".json5"))
-                parse(IOUtils.resourceToString("/json5/singleDesc/" + f, StandardCharsets.UTF_8), IOUtils.resourceToString("/json5/singleDesc/" + f + ".except", StandardCharsets.UTF_8));
-        }
+        json5("singleDesc");
 
     }
+
     /**
      * 测试json5支持
      * <p>多行注释</p>
@@ -223,9 +215,27 @@ public class JsonParserTest {
     @Test
     public void json5MultiDesc() throws Exception {
 
-// 单行注释，允许出现在除 key和value内部的以外的任何位置
+// 多行注释，允许出现在除 key和value内部的以外的任何位置
 
-        URL resource = getClass().getResource("/json5/multiDesc");
+        json5("multiDesc");
+
+    }
+
+    /**
+     * 测试json5支持
+     * <p>单双引号</p>
+     */
+    @Test
+    public void json5Quotation() throws Exception {
+
+// 允许key-value使用单双引号
+
+        json5("quotation");
+
+    }
+
+    private void json5(String prefix) throws Exception {
+        URL resource = getClass().getResource("/json5/" + prefix);
 
         File file = new File(resource.getFile());
         String[] list = file.list();
@@ -233,10 +243,10 @@ public class JsonParserTest {
         for (String f : list) {
             System.out.println("测试文件 = " + f);
             if (f.endsWith(".json5"))
-                parse(IOUtils.resourceToString("/json5/multiDesc/" + f, StandardCharsets.UTF_8), IOUtils.resourceToString("/json5/multiDesc/" + f + ".except", StandardCharsets.UTF_8));
+                parse(IOUtils.resourceToString("/json5/" + prefix + "/" + f, StandardCharsets.UTF_8), IOUtils.resourceToString("/json5/" + prefix + "/" + f + ".except", StandardCharsets.UTF_8));
         }
-
     }
+
     public void parse(JsonConfig config, String json, String except) {
         JsonElement element = new JsonParser(config).parse(json);
 
