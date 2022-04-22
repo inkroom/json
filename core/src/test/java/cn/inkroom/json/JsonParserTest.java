@@ -15,8 +15,13 @@ import cn.inkroom.json.core.JsonParser;
 import cn.inkroom.json.core.annotation.JsonConfig;
 import cn.inkroom.json.core.annotation.JsonFeature;
 import cn.inkroom.json.core.exception.JsonException;
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.File;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class JsonParserTest {
 
@@ -26,7 +31,7 @@ public class JsonParserTest {
     @Test
     public void parseObject() {
 
-
+        parse("");
         parse("{}");
         parse("{\"1\":1}");
         parse("{\"1\":1.0}");
@@ -90,7 +95,7 @@ public class JsonParserTest {
         try {
             new JsonParser(new JsonConfig()).parse("{\nw");
         } catch (JsonException e) {
-            Assert.assertEquals("cn.inkroom.json.core.exception.JsonException: Unexpected character w row: 1, col: 1", e.getMessage());
+            Assert.assertEquals("Unexpected character [w] row: 1, col: 1", e.getMessage());
         }
 
         //不允许最后一个逗号存在
@@ -190,10 +195,33 @@ public class JsonParserTest {
 
     }
 
+    /**
+     * 测试json5支持
+     * <p>单行注释</p>
+     */
+    @Test
+    public void json5SingDesc() throws Exception {
+
+// 单行注释，允许出现在除 key和value内部的以外的任何位置
+
+        URL resource = getClass().getResource("/json5/singleDesc");
+
+        File file = new File(resource.getFile());
+        String[] list = file.list();
+
+        for (String f : list) {
+            System.out.println("测试文件 = " + f);
+            if (f.endsWith(".json5"))
+                parse(IOUtils.resourceToString("/json5/singleDesc/" + f, StandardCharsets.UTF_8), IOUtils.resourceToString("/json5/singleDesc/" + f + ".except", StandardCharsets.UTF_8));
+        }
+
+    }
+
     public void parse(JsonConfig config, String json, String except) {
         JsonElement element = new JsonParser(config).parse(json);
 
-        Assert.assertEquals(except, element.toString());
+        if (element != null)
+            Assert.assertEquals(except, element.toString());
 
     }
 

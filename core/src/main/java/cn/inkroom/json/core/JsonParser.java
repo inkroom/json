@@ -21,7 +21,7 @@ import java.util.Stack;
 public class JsonParser {
 
 
-    private JsonConfig config;
+    private final JsonConfig config;
 
     public JsonParser() {
         config = new JsonConfig();
@@ -43,25 +43,34 @@ public class JsonParser {
         /*
         token 和 状态是两个东西，一个状态应该对应多个token。意思是可能读取到不同的token，但是都会转向相同的状态
          */
-        int exceptStatus = STATUS_EXPECT_SINGLE_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY;//期望下一个状态
+        int exceptStatus = STATUS_EXPECT_SINGLE_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;//期望下一个状态
         for (; ; ) {
 
             Token t = reader.readNextToken();
             switch (t) {
+                case SINGLE_DESC_START:
+                    if (hasStatus(exceptStatus, STATUS_EXCEPT_SINGLE_DESC_START)) {
+                        reader.skipLine();
+                    } else {
+                        reader.throwError(t);
+                    }
+                    continue;
                 case DOCUMENT_START:
-                    exceptStatus = STATUS_EXPECT_SINGLE_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY;
+                    exceptStatus = STATUS_EXPECT_SINGLE_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY | STATUS_EXPECT_END_DOCUMENT | STATUS_EXCEPT_SINGLE_DESC_START;
                     continue;
                 case DOCUMENT_END:
                     if (hasStatus(exceptStatus, STATUS_EXPECT_END_DOCUMENT)) {
                         if (stack.size() == 1) {
                             return stack.pop();
+                        } else {
+                            return null;
                         }
                     }
                     reader.throwError(t);
                 case OBJECT_START:
                     if (hasStatus(exceptStatus, STATUS_EXPECT_BEGIN_OBJECT)) {//是否是一个正确的状态
                         stack.push(JsonFactory.createObject());
-                        exceptStatus = STATUS_EXPECT_END_OBJECT | STATUS_EXPECT_OBJECT_KEY;
+                        exceptStatus = STATUS_EXPECT_END_OBJECT | STATUS_EXPECT_OBJECT_KEY | STATUS_EXCEPT_SINGLE_DESC_START;
 
                         continue;
                     }
@@ -71,7 +80,7 @@ public class JsonParser {
                         //开始读取一个Array，后续可以是结束这个Array，或者直接一个Value，或者是一个Object开始，再或者嵌套一个Array
 
                         stack.push(JsonFactory.createArray());
-                        exceptStatus = STATUS_EXPECT_END_ARRAY | STATUS_EXPECT_ARRAY_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY;
+                        exceptStatus = STATUS_EXPECT_END_ARRAY | STATUS_EXPECT_ARRAY_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
 
                     }
@@ -81,7 +90,7 @@ public class JsonParser {
                         JsonElement v = stack.pop();//此时应该是一个Array
                         if (stack.isEmpty()) {
                             stack.push(v);
-                            exceptStatus = STATUS_EXPECT_END_DOCUMENT;
+                            exceptStatus = STATUS_EXPECT_END_DOCUMENT | STATUS_EXCEPT_SINGLE_DESC_START;
                             continue;
                         }
                         //栈内还有数据，那么代表读取完了这个Array，这个Array可能是前一个Object中某个key的value，也可以是前一个Array中的一个value
@@ -94,7 +103,7 @@ public class JsonParser {
                             map.put(pre.toString(), v);
 
                             //读取完object中的一个k-v，那么后续要么是一个逗号，继续kv；要么直接结束这个Object
-                            exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT;
+                            exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;
 
                             continue;
                         }
@@ -103,7 +112,7 @@ public class JsonParser {
                             ((JsonArray) stack.peek()).add(pre);
 
                             //读取完Array的一个value，那么后续要么是一个逗号，继续value；要么直接结束这个Array
-                            exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY;
+                            exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;
                             continue;
                         }
                     }
@@ -115,7 +124,7 @@ public class JsonParser {
                         JsonElement v = stack.pop();//此时v应该是一个Object
                         if (stack.isEmpty()) {
                             stack.push(v);
-                            exceptStatus = STATUS_EXPECT_END_DOCUMENT;
+                            exceptStatus = STATUS_EXPECT_END_DOCUMENT | STATUS_EXCEPT_SINGLE_DESC_START;
                             continue;
                         }
                         //栈里还有数据，那么代表当前这个Object已经读取完了，这个Object可能是前一个Object中某个key的value，也可以是前一个Array中的一个value
@@ -126,7 +135,7 @@ public class JsonParser {
                             map.put(pre.toString(), v);
 
                             //读取完object中的一个k-v，那么后续要么是一个逗号，继续kv；要么直接结束这个Object
-                            exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT;
+                            exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;
 
                             continue;
                         }
@@ -135,7 +144,7 @@ public class JsonParser {
                             ((JsonArray) pre).add(v);
                             stack.push(pre);
                             //读取完Array的一个value，那么后续要么是一个逗号，继续value；要么直接结束这个Array
-                            exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY;
+                            exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;
                             continue;
                         }
                     }
@@ -143,12 +152,12 @@ public class JsonParser {
                 case TEXT:
                     if (hasStatus(exceptStatus, STATUS_EXPECT_SINGLE_VALUE)) {//整行只有一个数据
                         stack.push(JsonFactory.createValue(reader.readString()));
-                        exceptStatus = STATUS_EXPECT_END_DOCUMENT;
+                        exceptStatus = STATUS_EXPECT_END_DOCUMENT | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_KEY)) {// object的key
                         stack.push(JsonFactory.createValue(reader.readString()));
-                        exceptStatus = STATUS_EXPECT_COLON;//后面应该是冒号
+                        exceptStatus = STATUS_EXPECT_COLON | STATUS_EXCEPT_SINGLE_DESC_START;//后面应该是冒号
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_VALUE)) {
@@ -157,26 +166,26 @@ public class JsonParser {
                         JsonObject peek = (JsonObject) stack.peek();
                         peek.put(key, JsonFactory.createValue(value));
 
-                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT;
+                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;
 
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_ARRAY_VALUE)) {
                         String value = reader.readString();
                         ((JsonArray) stack.peek()).add(JsonFactory.createValue(value));
-                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY;
+                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     reader.throwError(t);
                 case NUMBER:
                     if (hasStatus(exceptStatus, STATUS_EXPECT_SINGLE_VALUE)) {//整行只有一个数据
                         stack.push(JsonFactory.createValue(reader.readNumber()));
-                        exceptStatus = STATUS_EXPECT_END_DOCUMENT;
+                        exceptStatus = STATUS_EXPECT_END_DOCUMENT | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_KEY)) {// object的key
                         stack.push(JsonFactory.createValue(reader.readNumber()));
-                        exceptStatus = STATUS_EXPECT_COLON;//后面应该是冒号
+                        exceptStatus = STATUS_EXPECT_COLON | STATUS_EXCEPT_SINGLE_DESC_START;//后面应该是冒号
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_VALUE)) {
@@ -184,70 +193,70 @@ public class JsonParser {
                         Number value = reader.readNumber();
                         JsonObject peek = (JsonObject) stack.peek();
                         peek.put(key, JsonFactory.createValue(value));
-                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT;
+                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_ARRAY_VALUE)) {
                         ((JsonArray) stack.peek()).add(JsonFactory.createValue(reader.readNumber()));
-                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY;
+                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     reader.throwError(t);
                 case NULL:
                     if (hasStatus(exceptStatus, STATUS_EXPECT_SINGLE_VALUE)) {//整行只有一个数据
                         stack.push(JsonFactory.createValue(JsonFactory.createValue(reader.readNull())));
-                        exceptStatus = STATUS_EXPECT_END_DOCUMENT;
+                        exceptStatus = STATUS_EXPECT_END_DOCUMENT | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_VALUE)) {
                         String key = stack.pop().toString();
                         JsonObject peek = (JsonObject) stack.peek();
                         peek.put(key, JsonFactory.createValue(reader.readNull()));
-                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT;
+                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_ARRAY_VALUE)) {
                         ((JsonArray) stack.peek()).add(JsonFactory.createValue(reader.readNull()));
-                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY;
+                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     reader.throwError(t);
                 case BOOLEAN:
                     if (hasStatus(exceptStatus, STATUS_EXPECT_SINGLE_VALUE)) {//整行只有一个数据
                         stack.push(JsonFactory.createValue(reader.readBoolean()));
-                        exceptStatus = STATUS_EXPECT_END_DOCUMENT;
+                        exceptStatus = STATUS_EXPECT_END_DOCUMENT | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_VALUE)) {
                         String key = stack.pop().toString();
                         JsonObject peek = (JsonObject) stack.peek();
                         peek.put(key, JsonFactory.createValue(reader.readBoolean()));
-                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT;
+                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_ARRAY_VALUE)) {
                         ((JsonArray) stack.peek()).add(JsonFactory.createValue(reader.readBoolean()));
-                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY;
+                        exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     reader.throwError(t);
                 case SEP_COLON://冒号
                     if (hasStatus(exceptStatus, STATUS_EXPECT_COLON)) {
-                        exceptStatus = STATUS_EXPECT_OBJECT_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY;
+                        exceptStatus = STATUS_EXPECT_OBJECT_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;
                         continue;
                     }
                     reader.throwError(t);
                 case SEP_COMMA://逗号
                     if (hasStatus(exceptStatus, STATUS_EXPECT_COMMA)) {
                         if (hasStatus(exceptStatus, STATUS_EXPECT_END_OBJECT)) {//之前已经读取了一个object的key，现在读取到了逗号，后面就应该跟一个object的key
-                            exceptStatus = STATUS_EXPECT_OBJECT_KEY;
+                            exceptStatus = STATUS_EXPECT_OBJECT_KEY | STATUS_EXCEPT_SINGLE_DESC_START;
                             if (config.isEnable(JsonFeature.ALLOW_LAST_COMMA)) {//允许最后一个元素后面可以存在逗号，那么下一个token就可以是key或者object end
                                 exceptStatus |= STATUS_EXPECT_END_OBJECT;
                             }
                             continue;
                         }
                         if (hasStatus(exceptStatus, STATUS_EXPECT_END_ARRAY)) {//之前已经读取了array的一个value，现在读取到了逗号，后面可以跟一个新的value，或者一个新的Object，再或者一个新的Array
-                            exceptStatus = STATUS_EXPECT_ARRAY_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY;
+                            exceptStatus = STATUS_EXPECT_ARRAY_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY | STATUS_EXCEPT_SINGLE_DESC_START;
                             if (config.isEnable(JsonFeature.ALLOW_LAST_COMMA)) {//允许最后一个元素后面可以存在逗号，那么下一个token就可以是array end
                                 exceptStatus |= STATUS_EXPECT_END_ARRAY;
                             }
@@ -270,7 +279,7 @@ public class JsonParser {
      *
      * @param except 期望状态
      * @param actual 实际状态
-     * @return
+     * @return 新的状态是否符合期望
      */
     private boolean hasStatus(int except, int actual) {
         return ((except & actual) > 0);
@@ -330,5 +339,22 @@ public class JsonParser {
      * Should read a single value for next token (must not be "{" or "[").
      */
     static final int STATUS_EXPECT_SINGLE_VALUE = 0x0800;
+
+    /**
+     * 单行注释开头
+     */
+    static final int STATUS_EXCEPT_SINGLE_DESC_START = 0x1600;
+    /**
+     * 多行文本开头
+     */
+    static final int STATUS_EXCEPT_MULTI_DESC_START = 0x3200;
+    /**
+     * 多行文本结束
+     */
+    static final int STATUS_EXCEPT_MULTI_DESC_END = 0x6400;
+    /**
+     * 换行
+     */
+    static final int STATUS_EXCEPT_LINE = 0x12800;
 
 }

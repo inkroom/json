@@ -26,7 +26,7 @@ public class StringTokenReader implements TokenReader {
 
 
     private JsonConfig config;
-    private char[] data;//数据窗口，每次读取这么多数据，把数据窗口的数据使用完之后再读取
+    private final char[] data;//数据窗口，每次读取这么多数据，把数据窗口的数据使用完之后再读取
     private int cursor = -1;//数据指针，指向即将读取的数据位置，包括换行符之类的空白字符
     private int row = 0;//读取到第几行
     private int col = -1;//读取到第几列
@@ -39,7 +39,17 @@ public class StringTokenReader implements TokenReader {
 
 
     private boolean isWhiteSpace(char ch) {
-        return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
+        return ch == ' ' || ch == '\t';
+    }
+
+    /**
+     * 换行符
+     *
+     * @param ch 字符
+     * @return 是否是换行符
+     */
+    private boolean isLine(char ch) {
+        return ch == '\r' || ch == '\n';
     }
 
     @Override
@@ -55,45 +65,68 @@ public class StringTokenReader implements TokenReader {
         }
         if (!hasMore()) return Token.DOCUMENT_END;
 
-        char datum = next();
-        while (isWhiteSpace(datum)) {//去除空白字符，不用担心去除了字符串里的空白字符
-            if (!hasMore()) return Token.DOCUMENT_END;
-            datum = next();
-        }
+        for (; ; ) {
 
-        if (datum == '{') {
-            return Token.OBJECT_START;
-        } else if (datum == '}') {
-            return Token.OBJECT_END;
-        } else if (datum == '[') {
-            return Token.ARRAY_START;
-        } else if (datum == ']') {
-            return Token.ARRAY_END;
-        } else if (datum == ',') {
-            return Token.SEP_COMMA;
-        } else if (datum == ':') {
-            return Token.SEP_COLON;
-        } else if (datum == '"') {
-            return Token.TEXT;
-        } else if (datum == 't') {
-            return Token.BOOLEAN;
-        } else if (datum == 'f') {
-            return Token.BOOLEAN;
-        } else if (datum == 'n') {
-            return Token.NULL;
-        } else if (datum <= '9' && datum >= '0') {
-            return Token.NUMBER;
-        } else if (datum == '-') {//可能是负数，后面应该跟数字
-            // cursor已经累加了，所以不用再+1了
-            if (peek() <= '9' && peek() >= '0')
+            char datum = next();
+            while (isWhiteSpace(datum)) {//去除空白字符，不用担心去除了字符串里的空白字符
+                if (!hasMore()) return Token.DOCUMENT_END;
+                datum = next();
+            }
+
+            if (datum == '{') {
+                return Token.OBJECT_START;
+            } else if (datum == '}') {
+                return Token.OBJECT_END;
+            } else if (datum == '[') {
+                return Token.ARRAY_START;
+            } else if (datum == ']') {
+                return Token.ARRAY_END;
+            } else if (datum == ',') {
+                return Token.SEP_COMMA;
+            } else if (datum == ':') {
+                return Token.SEP_COLON;
+            } else if (datum == '"') {
+                return Token.TEXT;
+            } else if (datum == 't') {
+                return Token.BOOLEAN;
+            } else if (datum == 'f') {
+                return Token.BOOLEAN;
+            } else if (datum == 'n') {
+                return Token.NULL;
+            } else if (datum <= '9' && datum >= '0') {
                 return Token.NUMBER;
-            else {
-                throwError(null);
+            } else if (datum == '-') {//可能是负数，后面应该跟数字
+                // cursor已经累加了，所以不用再+1了
+                if (peek() <= '9' && peek() >= '0')
+                    return Token.NUMBER;
+                else {
+                    throwError(null);
+                }
+            } else if (datum == '/') {//可能是注释
+                // 由于reader没有上下文信息，不能确定此时是否可以允许有注释存在，故交给上层处理
+                if (peek() == '/') {// 确实是注释开头
+                    return Token.SINGLE_DESC_START;
+                } else if (peek() == '*') {// 多行注释
+                    return Token.MULTI_DESC_START;
+                }
+                return Token.TEXT;
+            } else if (datum == '*') {
+                if (peek() == '/') {// 换行符结束
+                    return Token.MULTI_DESC_END;
+                }
+                return Token.TEXT;
+            } else if (datum == '\r') {// 兼容不同的换行符
+                if (peek() == '\n') {
+                    return Token.LINE;
+                }
+            } else if (datum == '\n') {
+                return Token.LINE;
             }
         }
 
-        return Token.ILL;
+//        return Token.ILL;
     }
+
 
     @Override
     public boolean readBoolean() {
@@ -104,7 +137,7 @@ public class StringTokenReader implements TokenReader {
         } else if (now == 'f') {
             except = "alse";
         }
-        int i = 0;
+        int i;
         for (i = 0; i < except.length(); i++) {
             char c = next();
             if (c != except.charAt(i)) {
@@ -114,6 +147,24 @@ public class StringTokenReader implements TokenReader {
         //不用考虑可能存在多余的字符，如果有多出的字符，那么在状态机的下一次转换中会认定为状态不合法
 
         return now == 't';
+    }
+
+    @Override
+    public void skipLine() {
+        while (true) {
+            if (!hasMore()) {
+                break;
+            }
+            char next = next();
+
+            if (next == '\r' && next() == '\n') {
+                break;
+            } else if (next == '\n') {
+                break;
+            }
+
+
+        }
     }
 
     @Override
@@ -156,7 +207,7 @@ public class StringTokenReader implements TokenReader {
                 } else {
                     throwError(null);
                 }
-            } else if (isWhiteSpace(c)) {//允许后面有空白字符，但是不允许中间存在；前面的空白字符在之前的获取Token的过程中已经去除了
+            } else if (isWhiteSpace(c) || isLine(c)) {//允许后面有空白字符，但是不允许中间存在；前面的空白字符在之前的获取Token的过程中已经去除了
                 hasWhiteSpace = true;
                 next();
             } else {//读取到其他非法字符
@@ -259,7 +310,7 @@ public class StringTokenReader implements TokenReader {
     @Override
     public Object readNull() {
         String except = "ull";
-        int i = 0;
+        int i;
         for (i = 0; i < except.length(); i++) {
             char c = next();
             if (c != except.charAt(i)) {
@@ -272,14 +323,14 @@ public class StringTokenReader implements TokenReader {
 
     @Override
     public void throwError(Token token) throws JsonParseException {
-        throw new JsonParseException("Unexpected character " + now() + " row: " + row + ", col: " + col);
+        throw new JsonParseException("Unexpected character [" + now() + "] row: " + row + ", col: " + col);
 
     }
 
     /**
      * 取下一个字符，但是指针不动
      *
-     * @return
+     * @return 读取的字符
      */
     private char peek() {
         if (!hasMore()) throwError(null);
@@ -293,7 +344,7 @@ public class StringTokenReader implements TokenReader {
     /**
      * 下一个元素，指针移动
      *
-     * @return
+     * @return 读取的字符
      */
     private char next() {
         if (!hasMore()) throwError(null);
@@ -311,10 +362,14 @@ public class StringTokenReader implements TokenReader {
     /**
      * 当前指针指向的数据
      *
-     * @return
+     * @return 当前字符
      */
     private char now() {
         return data[cursor - 1];
     }
 
+    @Override
+    public String toString() {
+        return new String(data);
+    }
 }

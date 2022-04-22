@@ -33,6 +33,26 @@ public enum Token {
     NUMBER,
     NULL,
     /**
+     * 单行注释开始
+     */
+    SINGLE_DESC_START,
+    /**
+     * 单行注释结束
+     */
+    SINGLE_DESC_END,
+    /**
+     * 多行注释开始
+     */
+    MULTI_DESC_START,
+    /**
+     * 多行注释结束
+     */
+    MULTI_DESC_END,
+    /**
+     * 换行符
+     */
+    LINE,
+    /**
      * 非法
      */
     ILL,

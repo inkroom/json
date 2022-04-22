@@ -19,18 +19,23 @@ public interface TokenReader {
     /**
      * 设置配置项
      *
-     * @param config
+     * @param config 配置项
      */
     void setConfig(JsonConfig config);
 
     /**
      * 获取下一个token
      *
-     * @return
+     * @return 获取的token
      */
     Token readNextToken();
 
     boolean readBoolean();
+
+    /**
+     * 跳过一行的内容，用于单行注释
+     */
+    void skipLine();
 
     Number readNumber();
 

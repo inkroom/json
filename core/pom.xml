@@ -19,12 +19,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.inkroom.json</groupId>
     <artifactId>core</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
