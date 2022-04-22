@@ -162,6 +162,12 @@ public class JsonParserTest {
         parse(new JsonConfig(), "'wwww2'", "\"wwww2\"");
         parse("-1");
         parse("0.23");
+        parse(new JsonConfig(), ".3", "0.3");//测试json5数字写法
+        parse(new JsonConfig(), "3.", "3.0");//测试json5数字写法
+        parse(new JsonConfig(), "+3", "3");//测试json5数字写法
+        parse(new JsonConfig(), "+3", "3");//测试json5数字写法
+        parse(new JsonConfig(), "0x17F7b6b5", "402110133");//测试json5数字写法
+        parse(new JsonConfig(), "0x7fffffffffffffff", Long.toString(Long.MAX_VALUE));//测试json5数字写法
 
 
         //测试非法数据
@@ -170,12 +176,12 @@ public class JsonParserTest {
         parseError("www");//字符串未包裹
 
         parseError(".");//非法小数
-        parseError("0.");//非法小数
         parseError("0.3.3");//非法小数
 
         parseError("3o");//数字开头，混合其他字符
         parseError("30.d");//数字开头，混合其他字符
         parseError("843.290re");//数字开头，混合其他字符
+        parseError("843 290");//数字开头，混合其他字符
 
         parseError("trso");//不正确的布尔值
         parseError("trus");//不正确的布尔值
@@ -232,6 +238,19 @@ public class JsonParserTest {
 // 允许key-value使用单双引号
 
         json5("quotation");
+
+    }
+
+    /**
+     * 测试json5支持
+     * <p>数字写法</p>
+     */
+    @Test
+    public void json5Number() throws Exception {
+
+// json5的数字写法
+
+        json5("number");
 
     }
 

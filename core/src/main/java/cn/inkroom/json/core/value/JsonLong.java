@@ -29,4 +29,9 @@ public class JsonLong implements JsonElement {
     public Long getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return getValue().toString();
+    }
 }

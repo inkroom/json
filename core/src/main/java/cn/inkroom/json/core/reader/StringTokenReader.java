@@ -97,7 +97,7 @@ public class StringTokenReader implements TokenReader {
                 return Token.NULL;
             } else if (datum <= '9' && datum >= '0') {
                 return Token.NUMBER;
-            } else if (datum == '-') {//可能是负数，后面应该跟数字
+            } else if (datum == '-' || datum == '.' || datum == '+') {//负数正数小数，.开头小数为json5语法
                 // cursor已经累加了，所以不用再+1了
                 if (peek() <= '9' && peek() >= '0')
                     return Token.NUMBER;
@@ -190,6 +190,12 @@ public class StringTokenReader implements TokenReader {
         boolean hasPoint = false;//是否读取到小数点
         boolean hasE = false;
         boolean hasWhiteSpace = false;
+        boolean isSixteen = false;// 是否是16进制
+
+        if (builder.charAt(0) == '.') { // json5可能第一个字符就是小数点
+            hasPoint = true;
+        }
+
         while (hasMore()) {
 
             char c = peek();
@@ -203,6 +209,14 @@ public class StringTokenReader implements TokenReader {
                 if (hasPoint) {
                     throwError(null);
                 } else {
+                    if (hasMore()) {
+                        char t = peek();
+                        if (t == ',' || t == '}' || t == ']') {// json5允许以小数点结束
+                            builder.append(next());
+                            hasPoint = true;
+                            break;
+                        }
+                    }
                     hasPoint = true;
                     builder.append(c);
                     next();
@@ -212,6 +226,9 @@ public class StringTokenReader implements TokenReader {
             } else if (c == 'e' || c == 'E') {
                 if (hasE) {
                     throwError(null);
+                } else if (isSixteen) {//此时正在读取十六进制字符
+                    builder.append('E');//十六进制使用大写
+                    next();
                 } else {
                     hasE = true;
                     builder.append('e');//只使用小写字母
@@ -219,8 +236,25 @@ public class StringTokenReader implements TokenReader {
                 }
             } else if (c == '-' || c == '+') {
                 if (hasE) {
-                    builder.append(c);
+                    builder.append(next());
                     next();
+                } else {
+                    throwError(null);
+                }
+            } else if (c == 'x' || c == 'X') {// json5 支持16进制写法
+                builder.append(next());
+                isSixteen = true;
+            } else if ((c >= 'a' && c <= 'z')) {// 16进制
+                if (isSixteen) {
+                    char next = next();
+                    next -= 32;
+                    builder.append(next);// 只使用大写字母
+                } else {
+                    throwError(null);
+                }
+            } else if ((c >= 'A' && c <= 'Z')) {//十六进制
+                if (isSixteen) {
+                    builder.append(next());
                 } else {
                     throwError(null);
                 }
@@ -234,17 +268,23 @@ public class StringTokenReader implements TokenReader {
         }
 
         char last = builder.charAt(builder.length() - 1);
-        if (last > '9' || last < '0') {//不正确的结尾
+        if ((!isSixteen && (last > '9' || last < '0')) && last != '.') {//不正确的结尾，因为有可能
             throwError(null);
         }
 
         if (hasPoint || hasE) {//有小数点或者使用了科学计数法
             //合法小数转换成double不会报错，但是数据直接不正确，只能直接用高精度，然后在使用的时候再处理成double
-            return new BigDecimal(builder.toString());
+            return new BigDecimal(last == '.' ? builder.append("0").toString() : builder.toString());
         }
         try {
-            return Integer.parseInt(builder.toString());
+            if (isSixteen) {// 十六进制
+                return Long.parseLong(builder.substring(2), 16);
+            }
+            return Long.parseLong(builder.toString());
         } catch (NumberFormatException e) {
+            if (isSixteen) {// 十六进制
+                return new BigInteger(builder.substring(2), 16);
+            }
             //大概率就是数字超限，转换成大数
             return new BigInteger(builder.toString());
         }
