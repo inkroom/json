@@ -38,6 +38,7 @@ public class JsonDouble implements JsonElement {
     public Type getType() {
         return Type.Double;
     }
+
     @Override
     public String toString() {
         return getValue().toString();

@@ -10,7 +10,7 @@
 
 package cn.inkroom.json.core.exception;
 
-public class JsonConfigException extends JsonException{
+public class JsonConfigException extends JsonException {
     public JsonConfigException() {
     }
 

@@ -31,11 +31,10 @@ public class JsonMapperTest {
 
         ObjectMapper om = new ObjectMapper();
 
-        byte[] b = new byte[]{0,2,3,4,5,6,7,8};
+        byte[] b = new byte[]{0, 2, 3, 4, 5, 6, 7, 8};
 
         System.out.println(new String(b));
         String s = om.writeValueAsString(b);
-
 
 
     }

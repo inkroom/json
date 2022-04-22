@@ -143,10 +143,10 @@ public class TokenReaderTest {
         readNumberError(function, "28.372.8");
         readNumberError(function, "28.372.8ds");
         readNumberError(function, "-.54");
-        readNumberError(function,"32e33e");
-        readNumberError(function,"7ee");
-        readNumberError(function,"7.e");
-        readNumberError(function,"7.4e-");
+        readNumberError(function, "32e33e");
+        readNumberError(function, "7ee");
+        readNumberError(function, "7.e");
+        readNumberError(function, "7.4e-");
 
         // 中间不允许有空格
         readNumberError(function, "93 28");

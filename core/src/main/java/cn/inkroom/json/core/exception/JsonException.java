@@ -13,7 +13,7 @@ package cn.inkroom.json.core.exception;
 /**
  * 一些json错误
  */
-public class JsonException extends RuntimeException{
+public class JsonException extends RuntimeException {
 
 
     public JsonException() {

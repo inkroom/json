@@ -22,6 +22,7 @@ public class JsonNull implements JsonElement {
     public String getValue() {
         return "null";
     }
+
     @Override
     public Type getType() {
         return Type.Null;
