@@ -157,12 +157,27 @@ public class StringTokenReader implements TokenReader {
             }
             char next = next();
 
-            if (next == '\r' && next() == '\n') {
+            if (next == '\r' && hasMore() && next() == '\n') {
                 break;
             } else if (next == '\n') {
                 break;
             }
 
+
+        }
+    }
+
+    @Override
+    public void skipMultiLine() {
+        while (true) {
+            if (!hasMore()) {
+                break;
+            }
+            char next = next();
+
+            if (next == '*' && hasMore() && next() == '/') {
+                break;
+            }
 
         }
     }

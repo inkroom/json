@@ -48,6 +48,9 @@ public class JsonParser {
 
             Token t = reader.readNextToken();
             switch (t) {
+                case DOCUMENT_START:
+                    exceptStatus = STATUS_EXPECT_SINGLE_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY | STATUS_EXPECT_END_DOCUMENT | STATUS_EXCEPT_SINGLE_DESC_START;
+                    continue;
                 case SINGLE_DESC_START:
                     if (hasStatus(exceptStatus, STATUS_EXCEPT_SINGLE_DESC_START)) {
                         reader.skipLine();
@@ -55,8 +58,9 @@ public class JsonParser {
                         reader.throwError(t);
                     }
                     continue;
-                case DOCUMENT_START:
-                    exceptStatus = STATUS_EXPECT_SINGLE_VALUE | STATUS_EXPECT_BEGIN_OBJECT | STATUS_EXPECT_BEGIN_ARRAY | STATUS_EXPECT_END_DOCUMENT | STATUS_EXCEPT_SINGLE_DESC_START;
+                case MULTI_DESC_START:
+                    // 读取到多行注释开头，开始循环直到读取到结束token，或者文件结束
+                    reader.skipMultiLine();
                     continue;
                 case DOCUMENT_END:
                     if (hasStatus(exceptStatus, STATUS_EXPECT_END_DOCUMENT)) {

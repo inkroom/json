@@ -37,6 +37,11 @@ public interface TokenReader {
      */
     void skipLine();
 
+    /**
+     * 跳过多行，用于多行注释
+     */
+    void skipMultiLine();
+
     Number readNumber();
 
     String readString();
