@@ -21,6 +21,7 @@
     <modules>
         <module>core</module>
         <module>serialize</module>
+        <module>common</module>
     </modules>
 
     <properties>
@@ -51,5 +52,20 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.inkroom.json</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.inkroom.json</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

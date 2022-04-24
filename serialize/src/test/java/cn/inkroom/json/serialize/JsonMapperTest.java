@@ -16,6 +16,7 @@ import cn.inkroom.json.core.annotation.JsonFeature;
 import cn.inkroom.json.serialize.example.Demo;
 import cn.inkroom.json.serialize.example.DemoEnum;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import org.junit.Assert;
@@ -57,7 +58,7 @@ public class JsonMapperTest {
 
         JsonMapper mapper = new JsonMapper(config);
         ObjectMapper om = new ObjectMapper();
-
+        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         //输出复合类型
         String write = mapper.write(d);
 
@@ -111,13 +112,13 @@ public class JsonMapperTest {
 
         JsonConfig config = new JsonConfig();
         JsonMapper mapper = new JsonMapper(config);
-
+        JsonParser parser = new JsonParser();
 
         String write = mapper.write(d);
-        JsonObject gson = com.google.gson.JsonParser.parseString(write).getAsJsonObject();
+        cn.inkroom.json.core.JsonObject parse = parser.parse(write).getAsJsonObject();
 
-        Assert.assertEquals(1, gson.get("v22").getAsInt());
-        Assert.assertEquals(1, gson.get("v22-alias").getAsInt());
-        Assert.assertEquals(1, gson.get("v22-alias2").getAsInt());
+        Assert.assertEquals(1, parse.getAsInt("v22"));
+        Assert.assertEquals(1, parse.getAsInt("v22-alias"));
+        Assert.assertEquals(1, parse.getAsInt("v22-alias2"));
     }
 }

@@ -30,8 +30,11 @@
     <dependencies>
         <dependency>
             <groupId>cn.inkroom.json</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.inkroom.json</groupId>
             <artifactId>core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

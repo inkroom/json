@@ -10,7 +10,8 @@
 
 package cn.inkroom.json.serialize.example;
 
-import cn.inkroom.json.serialize.annotation.JsonAlias;
+
+import cn.inkroom.json.common.annotation.JsonAlias;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
