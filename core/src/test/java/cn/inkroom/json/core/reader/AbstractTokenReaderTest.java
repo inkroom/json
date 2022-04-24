@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import java.io.Serializable;
 
-public class StringTokenReaderTest extends TokenReaderTest implements Serializable {
+public class AbstractTokenReaderTest extends TokenReaderTest implements Serializable {
 
     @Test
     public void readNumber() {
