@@ -104,7 +104,7 @@ public class JsonParser {
                         if (pre instanceof JsonString) {//此时是某个key的value
                             //取栈顶的map，设置进去
                             JsonObject map = (JsonObject) stack.peek();
-                            map.put(pre.toString(), v);
+                            map.put(((JsonString) pre).getValue(), v);
 
                             //读取完object中的一个k-v，那么后续要么是一个逗号，继续kv；要么直接结束这个Object
                             exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;
@@ -136,7 +136,7 @@ public class JsonParser {
                         if (pre instanceof JsonString) {//此时是某个key的value
                             //取栈顶的map，设置进去
                             JsonObject map = ((JsonObject) stack.peek());
-                            map.put(pre.toString(), v);
+                            map.put(((JsonString) pre).getValue(), v);
 
                             //读取完object中的一个k-v，那么后续要么是一个逗号，继续kv；要么直接结束这个Object
                             exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;
@@ -165,7 +165,7 @@ public class JsonParser {
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_VALUE)) {
-                        String key = stack.pop().toString();
+                        String key = ((String) stack.pop().getValue());
                         String value = reader.readString();
                         JsonObject peek = (JsonObject) stack.peek();
                         peek.put(key, JsonFactory.createValue(value));
@@ -193,7 +193,7 @@ public class JsonParser {
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_VALUE)) {
-                        String key = stack.pop().toString();
+                        String key = ((String) stack.pop().getValue());
                         Number value = reader.readNumber();
                         JsonObject peek = (JsonObject) stack.peek();
                         peek.put(key, JsonFactory.createValue(value));
@@ -213,7 +213,7 @@ public class JsonParser {
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_VALUE)) {
-                        String key = stack.pop().toString();
+                        String key = ((String) stack.pop().getValue());
                         JsonObject peek = (JsonObject) stack.peek();
                         peek.put(key, JsonFactory.createValue(reader.readNull()));
                         exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;
@@ -232,7 +232,7 @@ public class JsonParser {
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_VALUE)) {
-                        String key = stack.pop().toString();
+                        String key = ((String) stack.pop().getValue());
                         JsonObject peek = (JsonObject) stack.peek();
                         peek.put(key, JsonFactory.createValue(reader.readBoolean()));
                         exceptStatus = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_OBJECT | STATUS_EXCEPT_SINGLE_DESC_START;

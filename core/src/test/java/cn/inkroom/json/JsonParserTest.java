@@ -11,6 +11,7 @@
 package cn.inkroom.json;
 
 import cn.inkroom.json.core.JsonElement;
+import cn.inkroom.json.core.JsonObject;
 import cn.inkroom.json.core.JsonParser;
 import cn.inkroom.json.core.annotation.JsonConfig;
 import cn.inkroom.json.core.annotation.JsonFeature;
@@ -263,6 +264,18 @@ public class JsonParserTest {
 
 // json5的object key
 
+        JsonConfig config = new JsonConfig();
+        JsonObject element = new JsonParser(config).parse("{\"v1\":12,\"v2\":32.4,\"v3\":\"v3\",\"v4\":3.0,\"v6\":\"6\",\"v7\":433,\"v8\":3493.349,\"v14\":true,\"v17\":[21.0,32.0,12.0],\"v18\":[false,true,false,true],\"v19\":\"DCv0FdU=\",\"v20\":\"3579w\",\"v22\":1,\"v22-alias\":1,\"v22-alias2\":1}\n").getAsJsonObject();
+
+        Assert.assertNotNull(element.get("v1"));
+        Assert.assertNull(element.get("\"v1\""));
+        Assert.assertEquals(12, element.getAsLong("v1"));
+        Assert.assertNotNull(element.get("v19"));
+        Assert.assertNull(element.get("\"v19\""));
+        Assert.assertEquals("DCv0FdU=", element.getAsString("v19"));
+        Assert.assertNull(element.get("\"v18\""));
+        Assert.assertNotNull(element.get("v18"));
+        Assert.assertEquals(4, element.getAsJsonArray("v18").size());
         json5("key");
 
     }

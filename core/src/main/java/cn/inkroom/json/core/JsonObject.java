@@ -130,7 +130,7 @@ public class JsonObject extends LinkedHashMap<String, JsonElement> implements Js
     public String toString() {
         StringBuilder builder = new StringBuilder("{");
 
-        forEach((s, o) -> builder.append(s).append(":").append(o.toString()).append(","));
+        forEach((s, o) -> builder.append("\"").append(s).append("\"").append(":").append(o.toString()).append(","));
 
         if (builder.length() > 1) {//去除最后的逗号
             builder.deleteCharAt(builder.length() - 1);
