@@ -205,8 +205,7 @@ public class StringTokenReader implements TokenReader {
                 if (hasWhiteSpace) {//说明在中间存在空白字符
                     throwError(null);
                 }
-                builder.append(c);
-                next();
+                builder.append(next());
             } else if (c == '.') {
                 if (hasPoint) {
                     throwError(null);
@@ -220,8 +219,7 @@ public class StringTokenReader implements TokenReader {
                         }
                     }
                     hasPoint = true;
-                    builder.append(c);
-                    next();
+                    builder.append(next());
                 }
             } else if (c == ',' || c == '}' || c == ']') {//数字读取完成了
                 break;
@@ -239,11 +237,13 @@ public class StringTokenReader implements TokenReader {
             } else if (c == '-' || c == '+') {
                 if (hasE) {
                     builder.append(next());
-                    next();
                 } else {
                     throwError(null);
                 }
             } else if (c == 'x' || c == 'X') {// json5 支持16进制写法
+                if (builder.length() != 1 && builder.charAt(0) != '0') {// 十六进制要求必须以0x开头，其他写法均为非法
+                    throwError(null);
+                }
                 builder.append(next());
                 isSixteen = true;
             } else if ((c >= 'a' && c <= 'z')) {// 16进制

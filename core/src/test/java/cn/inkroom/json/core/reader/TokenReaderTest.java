@@ -62,7 +62,7 @@ public class TokenReaderTest {
             apply.readString();
             Assert.fail("没有检测出非法的unicode码");
         } catch (JsonParseException e) {
-            Assert.assertEquals("Unexpected character M row: 0, col: 6", e.getMessage());
+            Assert.assertEquals("Unexpected character [M] row: 0, col: 6", e.getMessage());
         }
 
     }
@@ -130,10 +130,15 @@ public class TokenReaderTest {
         readNumber(function, "-9.4E12", "-9400000000000");
         readNumber(function, "9.4E-12", "0.0000000000094");
         readNumber(function, "-8.7E-43", "-0.00000000000000000000000000000000000000000087");
+        readNumber(function, "1.", "1.0");
+        readNumber(function, ".1", "0.1");
+
+        // 测试十六进制
+        readNumber(function, "0x13a10f53", "329322323");
 
         //测试错误数据
         readNumberError(function, "-");
-        readNumberError(function, "1.");
+        readNumberError(function, ".1.");
         readNumberError(function, "1.d");
         readNumberError(function, "8w");
         readNumberError(function, "382spw");
