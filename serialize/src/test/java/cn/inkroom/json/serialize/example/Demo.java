@@ -10,6 +10,8 @@
 
 package cn.inkroom.json.serialize.example;
 
+import cn.inkroom.json.serialize.annotation.JsonAlias;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -41,8 +43,10 @@ public class Demo {
     private char[] v20 = new char[]{'3', '5', '7', '9', 'w'};
     private StringBuilder v21 = new StringBuilder("v21");
 
+    @JsonAlias(alias = {"v22-alias2"})
     private DemoEnum v22;
 
+    @JsonAlias(alias = {"v22-alias"})
     public DemoEnum getV22() {
         return v22;
     }

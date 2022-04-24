@@ -11,28 +11,46 @@
 package cn.inkroom.json.serialize;
 
 import cn.inkroom.json.core.JsonElement;
+import cn.inkroom.json.serialize.annotation.JsonAlias;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class Property {
     /**
      * 对应的method
      */
-    Method method;
+    private Method method;
     /**
      * 是否是get方法，false就是set方法,null 代表这是一个普通方法
      */
-    Boolean isGetter;
+    private Boolean isGetter;
     /**
      * 对应的field name
      */
-    String name;
+    private String name;
+    /**
+     * 输出的别名，不包括field name
+     */
+    private String[] alias;
+
     /**
      * 对应field的类型，使用json type存储
      */
-    JsonElement.Type type;
+    private JsonElement.Type type;
 
-    Class realClass;
+    private Class realClass;
+
+    public String[] getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String[] alias) {
+        this.alias = alias;
+    }
 
     public Method getMethod() {
         return method;
@@ -103,7 +121,7 @@ public class Property {
 
     }
 
-    static Property convert(Method method) {
+    static Property convert(Class c, Method method) {
 
         String name = method.getName();
         switch (name) {//屏蔽通用方法
@@ -141,8 +159,28 @@ public class Property {
 //                System.out.println(method.getName() + " " + method.getReturnType().getName() + "  " + property.type);
 
             }
+            // 处理可能存在的别名
+            HashSet<String> alias = new HashSet<>();
+            //　判断是否存在指定名字的field
+            try {
+                Field f = c.getDeclaredField(field);
+                JsonAlias annotation = f.getAnnotation(JsonAlias.class);
 
+                if (annotation != null) {
+                    alias.addAll(Arrays.stream(annotation.alias()).collect(Collectors.toSet()));
+                }
+            } catch (NoSuchFieldException e) {
+            }
 
+            JsonAlias annotation = method.getAnnotation(JsonAlias.class);
+            if (annotation != null) {
+                alias.addAll(Arrays.stream(annotation.alias()).collect(Collectors.toSet()));
+            }
+            if (!alias.isEmpty()) {
+                String[] r = new String[alias.size()];
+                alias.toArray(r);
+                property.setAlias(r);
+            }
             return property;
         }
         return null;

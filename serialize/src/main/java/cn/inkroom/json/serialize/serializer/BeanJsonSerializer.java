@@ -27,6 +27,7 @@ public class BeanJsonSerializer implements JsonSerializer<Object> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void serialize(Object value, JsonWriter writer, SerializerProvider provider) throws JsonSerializeException {
 
         SerializeClass c = getSerializeClass(value);
@@ -45,11 +46,29 @@ public class BeanJsonSerializer implements JsonSerializer<Object> {
             writer.flush();
 
             writer.field(p.getName());
+            JsonSerializer serializer = null;
             if (v == null) {
                 writer.writeNull();
-            } else
-                provider.findSerializer(v.getClass()).serialize(v, writer, provider);
+            } else {
+                serializer = provider.findSerializer(v.getClass());
+                serializer.serialize(v, writer, provider);
+            }
             writer.comma();
+
+            if (p.getAlias() != null) {
+
+                for (int i = 0; i < p.getAlias().length; i++) {
+                    writer.flush();
+                    writer.field(p.getAlias()[i]);
+                    if (v == null) {
+                        writer.writeNull();
+                    } else {
+                        serializer.serialize(v, writer, provider);
+                    }
+                    writer.comma();
+                }
+            }
+
         }
         writer.endObject();
 

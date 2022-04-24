@@ -86,9 +86,9 @@ public class JsonMapper {
         SerializeClass c = getSerializeClass(java);
 
         for (Property p : c.getGetters()) {
-            builder.append("\"").append(p.name).append("\":");
+            builder.append("\"").append(p.getName()).append("\":");
 
-            switch (p.type) {
+            switch (p.getType()) {
                 case Int:
                     builder.append(writeInt(p, java));
                     break;
@@ -132,7 +132,7 @@ public class JsonMapper {
         if (java instanceof Map) {
             return writeMap(((Map<?, ?>) java));
         }
-        Object invoke = p.method.invoke(java);
+        Object invoke = p.getMethod().invoke(java);
         if (invoke == null) {
             return "null";
         }
@@ -143,7 +143,7 @@ public class JsonMapper {
     }
 
     private String writeList(Property p, Object java) throws InvocationTargetException, IllegalAccessException {
-        Object invoke = p.method.invoke(java);
+        Object invoke = p.getMethod().invoke(java);
         if (invoke == null) {
             return "null";
         }
@@ -192,7 +192,7 @@ public class JsonMapper {
     }
 
     private String writeString(Property p, Object java) throws InvocationTargetException, IllegalAccessException {
-        Object invoke = p.method.invoke(java);
+        Object invoke = p.getMethod().invoke(java);
         if (invoke == null) {
             return "null";
         }
@@ -200,7 +200,7 @@ public class JsonMapper {
     }
 
     private String writeInt(Property p, Object java) throws InvocationTargetException, IllegalAccessException {
-        Object invoke = p.method.invoke(java);
+        Object invoke = p.getMethod().invoke(java);
         if (invoke == null) {
             return "null";
         }

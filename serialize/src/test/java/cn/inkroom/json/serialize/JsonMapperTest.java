@@ -17,6 +17,7 @@ import cn.inkroom.json.serialize.example.Demo;
 import cn.inkroom.json.serialize.example.DemoEnum;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -88,10 +89,35 @@ public class JsonMapperTest {
         // 首先输出ordinal
 
         String write = mapper.write(d);
-        Assert.assertTrue(write.endsWith("\"v22\":1}"));
+
+        JsonObject gson = com.google.gson.JsonParser.parseString(write).getAsJsonObject();
+        Assert.assertEquals(1, gson.get("v22").getAsInt());
 
         config.disable(JsonFeature.ENUM_ORDINAL);
         write = mapper.write(d);
-        Assert.assertTrue(write.endsWith("\"v22\":\"TEST2\"}"));
+        gson = com.google.gson.JsonParser.parseString(write).getAsJsonObject();
+        Assert.assertEquals("TEST2", gson.get("v22").getAsString());
+    }
+
+    /**
+     * 测试输出别名
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAlias() throws Exception {
+        Demo d = new Demo();
+        d.setV22(DemoEnum.TEST2);
+
+        JsonConfig config = new JsonConfig();
+        JsonMapper mapper = new JsonMapper(config);
+
+
+        String write = mapper.write(d);
+        JsonObject gson = com.google.gson.JsonParser.parseString(write).getAsJsonObject();
+
+        Assert.assertEquals(1, gson.get("v22").getAsInt());
+        Assert.assertEquals(1, gson.get("v22-alias").getAsInt());
+        Assert.assertEquals(1, gson.get("v22-alias2").getAsInt());
     }
 }

@@ -47,9 +47,9 @@ public class SerializeClass {
             Method[] methods = c.getDeclaredMethods();
 
             for (Method m : methods) {
-                Property property = Property.convert(m);
+                Property property = Property.convert(c, m);
                 if (property != null) {
-                    if (property.isGetter)
+                    if (property.getGetter())
                         getters.add(property);
                     else setters.add(property);
 
