@@ -53,6 +53,15 @@ public enum JsonFeature {
      * 默认不启用，将会格式化为{@link JsonConfig} 中指定的格式
      */
     TIME_STAMP(false),
+    /**
+     * 使用枚举序号输出
+     * <br>
+     * 默认启用
+     * <br>
+     * 关闭则输出name
+     */
+    ENUM_ORDINAL(true),
+
     ;
 
     /**

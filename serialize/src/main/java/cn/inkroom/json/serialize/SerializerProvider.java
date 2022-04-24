@@ -57,6 +57,9 @@ public class SerializerProvider {
         register(boolean[].class, new BooleanArraySerializer());
         register(byte[].class, new ByteArraySerializer());
 
+        // 枚举
+        register(Enum.class, new EnumSerializer());
+
         register(Object[].class, new ObjectArraySerializer());
 
 

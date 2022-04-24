@@ -14,6 +14,7 @@ import cn.inkroom.json.core.JsonParser;
 import cn.inkroom.json.core.annotation.JsonConfig;
 import cn.inkroom.json.core.annotation.JsonFeature;
 import cn.inkroom.json.serialize.example.Demo;
+import cn.inkroom.json.serialize.example.DemoEnum;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -48,6 +49,7 @@ public class JsonMapperTest {
         Map<String, Demo> v = new HashMap<>();
         v.put("v12", new Demo());
         d.setV10(v);
+        d.setV22(DemoEnum.TEST1);
 
         JsonConfig config = new JsonConfig();
         config.disable(JsonFeature.IGNORE_NULL);
@@ -68,5 +70,28 @@ public class JsonMapperTest {
 
         //测试数组类型
 
+    }
+
+    /**
+     * 测试枚举序列化
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEnum() throws Exception {
+        Demo d = new Demo();
+        d.setV22(DemoEnum.TEST2);
+
+        JsonConfig config = new JsonConfig();
+        JsonMapper mapper = new JsonMapper(config);
+
+        // 首先输出ordinal
+
+        String write = mapper.write(d);
+        Assert.assertTrue(write.endsWith("\"v22\":1}"));
+
+        config.disable(JsonFeature.ENUM_ORDINAL);
+        write = mapper.write(d);
+        Assert.assertTrue(write.endsWith("\"v22\":\"TEST2\"}"));
     }
 }

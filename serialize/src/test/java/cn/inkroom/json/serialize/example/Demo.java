@@ -41,6 +41,16 @@ public class Demo {
     private char[] v20 = new char[]{'3', '5', '7', '9', 'w'};
     private StringBuilder v21 = new StringBuilder("v21");
 
+    private DemoEnum v22;
+
+    public DemoEnum getV22() {
+        return v22;
+    }
+
+    public void setV22(DemoEnum v22) {
+        this.v22 = v22;
+    }
+
     public char[] getV20() {
         return v20;
     }
