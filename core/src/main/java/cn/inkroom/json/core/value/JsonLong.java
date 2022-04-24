@@ -16,6 +16,9 @@ public class JsonLong implements JsonElement {
 
     private long value;
 
+    public JsonLong() {
+    }
+
     public JsonLong(long value) {
         this.value = value;
     }
@@ -28,6 +31,13 @@ public class JsonLong implements JsonElement {
     @Override
     public Long getValue() {
         return value;
+    }
+
+    @Override
+    public JsonInt getAsJsonInt() {
+        Long value = getValue();
+        if (value == null) return new JsonInt();
+        return new JsonInt(value.intValue());
     }
 
     @Override
