@@ -44,6 +44,13 @@ public interface TokenReader {
 
     Number readNumber();
 
+    /**
+     * 获取key，支持json5
+     *
+     * @return key
+     */
+    String readKey();
+
     String readString();
 
     /**

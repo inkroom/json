@@ -160,7 +160,7 @@ public class JsonParser {
                         continue;
                     }
                     if (hasStatus(exceptStatus, STATUS_EXPECT_OBJECT_KEY)) {// object的key
-                        stack.push(JsonFactory.createValue(reader.readString()));
+                        stack.push(JsonFactory.createValue(reader.readKey()));
                         exceptStatus = STATUS_EXPECT_COLON | STATUS_EXCEPT_SINGLE_DESC_START;//后面应该是冒号
                         continue;
                     }
@@ -347,18 +347,18 @@ public class JsonParser {
     /**
      * 单行注释开头
      */
-    static final int STATUS_EXCEPT_SINGLE_DESC_START = 0x1600;
+    static final int STATUS_EXCEPT_SINGLE_DESC_START = 0x1000;
     /**
      * 多行文本开头
      */
-    static final int STATUS_EXCEPT_MULTI_DESC_START = 0x3200;
+    static final int STATUS_EXCEPT_MULTI_DESC_START = 0x2000;
     /**
      * 多行文本结束
      */
-    static final int STATUS_EXCEPT_MULTI_DESC_END = 0x6400;
+    static final int STATUS_EXCEPT_MULTI_DESC_END = 0x4000;
     /**
      * 换行
      */
-    static final int STATUS_EXCEPT_LINE = 0x12800;
+    static final int STATUS_EXCEPT_LINE = 0x8000;
 
 }

@@ -123,6 +123,8 @@ public class StringTokenReader implements TokenReader {
                 }
             } else if (datum == '\n') {
                 return Token.LINE;
+            } else {
+                return Token.TEXT;
             }
         }
 
@@ -291,11 +293,49 @@ public class StringTokenReader implements TokenReader {
     }
 
     @Override
+    public String readKey() {
+        StringBuilder builder = new StringBuilder();
+        char now = now();
+
+        if (now != '\'' && now != '"')
+            builder.append(now);
+
+        //不能作为key的特殊字符
+        char[] special = new char[]{
+                ' ', '[', ']', ',', ':', '\'', '\"', '{', '}', '*', '&', '(', ')'
+        };
+        for (; ; ) {
+            char c = peek();
+            if (c == '"' || c == '\'') {
+                if (now == c) {//如果是用单双引号包含的
+                    next();
+                    return builder.toString();
+                } else {//前后符号不一致，可以认为是一个非法结构
+                    throwError(Token.TEXT);
+                }
+            } else if (hasByte(special, c)) {//下个字符是特殊字符，可以认为读取结束
+                return builder.toString();
+            } else {
+                builder.append(next());
+            }
+        }
+    }
+
+    private boolean hasByte(char[] values, char value) {
+        for (int i = 0; i < values.length; i++) {
+            if (value == values[i]) return true;
+        }
+        return false;
+    }
+
+    @Override
     public String readString() {
 
         StringBuilder builder = new StringBuilder();
         char now = now();// 获取开始的字符，单引号或者双引号
-
+        if (now != '"' && now != '\'') {
+            throwError(Token.TEXT);
+        }
         for (; ; ) {
             char c = next();
             if (c == '\\') {

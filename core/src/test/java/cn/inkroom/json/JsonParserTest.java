@@ -254,6 +254,19 @@ public class JsonParserTest {
 
     }
 
+    /**
+     * 测试json5支持
+     * <p>object-Key写法</p>
+     */
+    @Test
+    public void json5Key() throws Exception {
+
+// json5的object key
+
+        json5("key");
+
+    }
+
     private void json5(String prefix) throws Exception {
         URL resource = getClass().getResource("/json5/" + prefix);
 
