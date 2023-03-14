@@ -63,6 +63,10 @@ public abstract class AbstractTokenReader implements TokenReader {
         for (; ; ) {
 
             char datum = next();
+            if (index() == 1 && datum == 0xFEFF) {// 去除可能存在的bom头
+                if (!hasMore()) return Token.DOCUMENT_END;
+                datum = next();
+            }
             while (isWhiteSpace(datum)) {//去除空白字符，不用担心去除了字符串里的空白字符
                 if (!hasMore()) return Token.DOCUMENT_END;
                 datum = next();
@@ -316,8 +320,8 @@ public abstract class AbstractTokenReader implements TokenReader {
     }
 
     private boolean hasByte(char[] values, char value) {
-        for (int i = 0; i < values.length; i++) {
-            if (value == values[i]) return true;
+        for (char c : values) {
+            if (value == c) return true;
         }
         return false;
     }

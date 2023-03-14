@@ -204,6 +204,18 @@ public class JsonParserTest {
 
     }
 
+    @Test
+    public void parseBom() throws Exception {
+        String json = IOUtils.resourceToString("/bom.json", StandardCharsets.UTF_8);
+        int i = Character.codePointAt(json.toCharArray(), 0);
+        Assert.assertEquals(0xFEff, i);// bom头
+
+        JsonElement element = new JsonParser(new JsonConfig()).parse(json);
+
+        if (element != null)
+            Assert.assertEquals(json.substring(1), element.toString());
+    }
+
     /**
      * 测试json5支持
      * <p>单行注释</p>
